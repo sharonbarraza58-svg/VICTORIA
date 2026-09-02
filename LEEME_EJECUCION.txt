@@ -1,0 +1,27 @@
+VICTORIA - EJECUCION WINDOWS
+
+1. Abre ESTA carpeta directamente en VS Code.
+2. Abre Terminal > New Terminal.
+3. Ejecuta:
+   .\EJECUTAR_VICTORIA_WINDOWS.bat
+
+El BAT crea el entorno virtual, instala requirements.txt y arranca FastAPI.
+
+Luego abre:
+   http://127.0.0.1:8000/instructor
+
+Para abrir directamente la vista de Competencias:
+   http://127.0.0.1:8000/instructor/competencias
+
+CAMBIOS VISUALES APLICADOS DIRECTAMENTE EN templates/instructor.html:
+- Logo V aislado, blanco y sin el cuadro verde ni el texto VICTORIA en la barra.
+- Navegacion en capsula de vidrio centrada.
+- Competencias activa con resaltado verde.
+- Campana y perfil dentro de una capsula de acciones.
+- Cerrar sesion como boton circular fijo abajo a la izquierda.
+- Panel principal de Competencias con glassmorphism verde.
+- Trimestres 1 y 2 en la columna izquierda; 3 y 4 en la derecha.
+- Trimestre 1 expandido por defecto.
+- Competencias de cada trimestre expandidas por defecto para mostrar sus fichas.
+- Las fichas siguen siendo clicables y llevan al detalle de ficha.
+- Al entrar a una ficha, la pestaña Competencias queda seleccionada y visible directamente.

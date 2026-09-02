@@ -1,0 +1,121 @@
+-- ============================================================
+
+
+CREATE TABLE Proyecto (
+    id_proyecto      SERIAL PRIMARY KEY,
+    nombre_proyecto  VARCHAR(120) NOT NULL,
+    descripcion      VARCHAR(300) NOT NULL,
+    fecha_inicio     DATE         NOT NULL,
+    fecha_fin        DATE         NOT NULL,
+    url_proyecto     VARCHAR(200) NOT NULL
+);
+
+CREATE TABLE Rol (
+    id_rol     SERIAL PRIMARY KEY,
+    nombre_rol VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- =====================
+-- Tablas con dependencias simples
+-- =====================
+
+CREATE TABLE Coordinacion (
+    id_coordinacion          SERIAL PRIMARY KEY,
+    nombre_coordinacion      VARCHAR(120) NOT NULL,
+    descripcion_coordinacion VARCHAR(300) NOT NULL,
+    area_enfoque             VARCHAR(20)  NOT NULL
+    -- id_programa e id_usuario se agregan luego (dependencias circulares)
+);
+
+CREATE TABLE Ficha (
+    id_ficha     SERIAL PRIMARY KEY,
+    estado       VARCHAR(10)  NOT NULL,
+    fecha_inicio TIMESTAMP    NOT NULL,
+    fecha_fin    TIMESTAMP    NOT NULL
+    -- id_programa, id_proyecto, id_usuario, id_material
+    -- se agregan con ALTER TABLE al final para evitar referencias circulares
+);
+
+CREATE TABLE Competencia (
+    id_competencia SERIAL PRIMARY KEY,
+    nombre         VARCHAR(120) NOT NULL,
+    descripcion    VARCHAR(300),
+    fecha_carga    TIMESTAMP    NOT NULL
+    -- id_programa se agrega al final (dependencia circular con Programa)
+);
+
+CREATE TABLE Material (
+    id_material      SERIAL PRIMARY KEY,
+    nombre_material  VARCHAR(120) NOT NULL,
+    tipo_material    VARCHAR(20)  NOT NULL,
+    formato_material VARCHAR(10)  NOT NULL,
+    url_material     VARCHAR(200) NOT NULL,
+    cantidad         INT          NOT NULL,
+    estado           VARCHAR(20)  NOT NULL
+    -- id_usuario se agrega al final
+);
+
+-- =====================
+-- Programa (depende de Coordinacion, Proyecto, Competencia, Ficha)
+-- =====================
+
+CREATE TABLE Programa (
+    id_programa     SERIAL PRIMARY KEY,
+    nombre          VARCHAR(120) NOT NULL,
+    nivel_formacion VARCHAR(20),
+    descripcion     VARCHAR(300),
+    url_programa    VARCHAR(200) NOT NULL,
+    id_coordinacion INT          NOT NULL REFERENCES Coordinacion(id_coordinacion),
+    id_ficha        INT          REFERENCES Ficha(id_ficha),
+    id_proyecto     INT          REFERENCES Proyecto(id_proyecto),
+    id_competencia  INT          REFERENCES Competencia(id_competencia)
+);
+
+-- =====================
+-- Usuario (depende de Rol, Ficha, Coordinacion)
+--
+-- Única definición de Usuario en todo el script (sin el viejo
+-- DROP TABLE Usuario CASCADE de versiones anteriores).
+-- =====================
+
+CREATE TABLE Usuario (
+    id_usuario       SERIAL PRIMARY KEY,
+    nombre           VARCHAR(100) NOT NULL,
+    apellido         VARCHAR(100),
+    id_rol           INT NOT NULL REFERENCES Rol(id_rol),
+    correo_personal  VARCHAR(100) UNIQUE NOT NULL,
+    correo_sena      VARCHAR(100) UNIQUE NOT NULL,
+    tipo_documento   VARCHAR(20) NOT NULL,
+    numero_documento VARCHAR(20) UNIQUE NOT NULL,
+    telefono         VARCHAR(20),
+    fecha_nacimiento DATE NOT NULL,
+    estado           VARCHAR(20) DEFAULT 'activo',
+    contrasena       VARCHAR(255) NOT NULL,
+    fecha_creacion   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- id_ficha e id_coordinacion SÍ validan contra Ficha/Coordinacion a
+    -- nivel de base de datos, igual que ya lo hace el ORM (SQLAlchemy).
+    id_ficha         INT REFERENCES Ficha(id_ficha) ON DELETE SET NULL,
+    id_coordinacion  INT REFERENCES Coordinacion(id_coordinacion) ON DELETE SET NULL
+);
+
+-- ============================================================
+-- ALTER TABLE: resolver dependencias circulares
+-- ============================================================
+
+-- Ficha → Programa, Proyecto, Usuario, Material
+-- id_programa lleva ON DELETE SET NULL porque el modelo Python
+-- (models/ficha.py) ya declara esa misma llave con ondelete="SET NULL".
+ALTER TABLE Ficha ADD COLUMN id_programa  INT REFERENCES Programa(id_programa) ON DELETE SET NULL;
+ALTER TABLE Ficha ADD COLUMN id_proyecto  INT REFERENCES Proyecto(id_proyecto);
+ALTER TABLE Ficha ADD COLUMN id_usuario   INT REFERENCES Usuario(id_usuario);
+ALTER TABLE Ficha ADD COLUMN id_material  INT REFERENCES Material(id_material);
+
+-- Competencia → Programa
+ALTER TABLE Competencia ADD COLUMN id_programa INT REFERENCES Programa(id_programa);
+
+-- Material → Usuario
+ALTER TABLE Material ADD COLUMN id_usuario INT REFERENCES Usuario(id_usuario);
+
+-- Coordinacion → Programa, Usuario
+ALTER TABLE Coordinacion ADD COLUMN id_programa INT REFERENCES Programa(id_programa);
+ALTER TABLE Coordinacion ADD COLUMN id_usuario  INT REFERENCES Usuario(id_usuario);

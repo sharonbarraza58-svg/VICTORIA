@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VICTORIA · Vistas del Instructor</title>
+<style>
+  :root{
+    --bg-0:#050f09;
+    --bg-1:#0d2417;
+    --bg-2:#173726;
+    --glass:rgba(255,255,255,.07);
+    --glass-brd:rgba(255,255,255,.12);
+    --glass-2:rgba(255,255,255,.14);
+    --ink:#eef6f0;
+    --ink-dim:#a9c2b3;
+    --ink-faint:#7c9488;
+    --accent:#7ee68b;
+    --accent-dim:#3f7a4c;
+    --accent-deep:#1f4a2b;
+    --warn:#e6b95c;
+    --danger:#e67e7e;
+    --radius-lg:26px;
+    --radius-md:16px;
+    --radius-sm:10px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 700px at 15% -10%, #1f4a30 0%, transparent 60%),
+      radial-gradient(900px 900px at 100% 20%, #1a3d27 0%, transparent 55%),
+      radial-gradient(1200px 800px at 50% 120%, #0f2a1a 0%, transparent 60%),
+      linear-gradient(160deg, var(--bg-0), var(--bg-1) 55%, var(--bg-2));
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before,body::after{content:"";position:fixed;z-index:-1;pointer-events:none;width:560px;height:560px;border-radius:50%;filter:blur(55px);opacity:.34;background:radial-gradient(circle,rgba(126,230,139,.34),rgba(47,122,69,.14) 42%,transparent 72%);}
+  body::before{left:-190px;top:16%;}
+  body::after{right:-190px;top:38%;width:650px;height:650px;opacity:.27;}
+  .app{max-width:1180px;margin:0 auto;padding:22px 22px 60px;position:relative;}
+  .app::before{content:"";position:fixed;z-index:-1;left:50%;top:80px;transform:translateX(-50%);width:min(1120px,calc(100vw - 28px));height:calc(100vh - 120px);border-radius:34px;background:rgba(185,222,194,.055);border:1px solid rgba(255,255,255,.055);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);}
+  /* ---------- Topbar ---------- */
+  .topbar{
+    display:flex;align-items:center;gap:18px;
+    background:rgba(8,20,13,.55);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(18px);
+    border-radius:22px;
+    padding:12px 20px;
+    margin-bottom:22px;
+  }
+  .logo{
+    display:flex;align-items:center;gap:8px;
+    font-weight:700;letter-spacing:.5px;font-size:15px;color:var(--ink);
+  }
+  .logo .v-mark{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,#7ee68b,#2f7a45);
+    display:flex;align-items:center;justify-content:center;
+    color:#06170d;font-weight:800;font-size:16px;
+  }
+  .nav{
+    display:flex;align-items:center;gap:2px;margin-left:14px;flex:1;justify-content:center;
+  }
+  .nav button{
+    display:flex;align-items:center;gap:7px;
+    background:transparent;border:none;color:rgba(255,255,255,.6);
+    padding:9px 13px;border-radius:999px;cursor:pointer;
+    transition:.15s;
+  }
+  .nav button span.lbl{font-size:12.5px;font-weight:600;display:none;}
+  .nav button svg{width:19px;height:19px;flex:none;}
+  .nav button:hover{color:#fff;}
+  .nav button.active{color:#fff;background:rgba(255,255,255,.12);padding:9px 16px;}
+  .nav button.active span.lbl{display:inline;}
+  .topbar .side-icons{display:flex;align-items:center;gap:6px;}
+  .icon-btn{
+    width:36px;height:36px;border-radius:50%;border:1px solid var(--glass-brd);
+    background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;position:relative;color:var(--ink-dim);
+  }
+  .icon-btn svg{width:16px;height:16px;}
+  .icon-btn:hover{color:var(--ink);}
+  .dot-badge{
+    position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;
+    background:var(--danger);color:#280808;font-size:9px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-1);
+  }
+
+  /* ---------- Perfil ---------- */
+  .perfil-wrap{max-width:980px;margin:0 auto;}
+  .perfil-hero{display:grid;grid-template-columns:120px 1fr;gap:24px;align-items:center;margin-bottom:18px;}
+  .perfil-avatar{width:120px;height:120px;border-radius:34px;background:linear-gradient(135deg,rgba(126,230,139,.35),rgba(31,74,43,.75));border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:#f1fff4;box-shadow:0 18px 40px rgba(0,0,0,.20);}
+  .perfil-kicker{color:var(--accent);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;margin-bottom:5px;}
+  .perfil-name{font-size:30px;font-weight:750;margin:0 0 5px;}
+  .perfil-role{color:var(--ink-dim);font-size:14px;margin:0;}
+  .perfil-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  .perfil-info{background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;}
+  .perfil-info .label{display:block;color:var(--ink-faint);font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;}
+  .perfil-info .value{font-size:15px;font-weight:650;color:var(--ink);word-break:break-word;}
+  .perfil-section-title{font-size:16px;font-weight:700;margin:22px 0 12px;}
+  .perfil-session{display:flex;align-items:center;justify-content:space-between;gap:14px;}
+  .perfil-status{display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-size:13px;font-weight:650;}
+  .perfil-status:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px rgba(126,230,139,.7);}
+  @media(max-width:650px){.perfil-hero{grid-template-columns:1fr;text-align:center}.perfil-avatar{margin:auto}.perfil-grid{grid-template-columns:1fr}}
+  /* ---------- Shared surfaces ---------- */
+  .crumb{color:var(--ink-faint);font-size:12px;margin-bottom:4px;}
+  .crumb button{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:12px;padding:0;}
+  .crumb button:hover{color:var(--accent);}
+  h1.page-title{font-size:26px;margin:2px 0 20px;font-weight:700;}
+  h1.page-title span{color:var(--ink-dim);font-weight:400;font-size:15px;display:block;margin-top:4px;}
+
+  .glass-card{
+    background:var(--glass);
+    border:1px solid var(--glass-brd);
+    backdrop-filter:blur(16px);
+    border-radius:var(--radius-lg);
+    padding:20px;
+  }
+  .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+  @media(max-width:820px){.card-grid{grid-template-columns:1fr;}}
+  .stat-card{
+    background:rgba(225,241,229,.20);border:1px solid rgba(255,255,255,.28);border-radius:16px;color:var(--ink);backdrop-filter:blur(18px) saturate(130%);-webkit-backdrop-filter:blur(18px) saturate(130%);
+    padding:14px 16px;display:flex;gap:11px;align-items:center;
+  }
+  .stat-card .ic{
+    width:30px;height:30px;border-radius:8px;background:var(--accent-deep);
+    display:flex;align-items:center;justify-content:center;flex:none;color:#eafbee;font-weight:800;font-size:13px;
+  }
+  .stat-card .ic svg{width:15px;height:15px;}
+  .stat-card b{display:block;font-size:15px;color:#f1faf3;}
+  .stat-card small{color:#c3d8c9;font-size:11.5px;}
+
+  .section-title{
+    font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);
+    margin:26px 0 10px;font-weight:700;
+  }
+
+  .list-item{
+    display:flex;align-items:center;gap:12px;
+    background:rgba(255,255,255,.9);
+    color:#12261a;
+    border-radius:var(--radius-md);
+    padding:13px 16px;margin-bottom:10px;cursor:pointer;
+    transition:.15s;border:1px solid transparent;
+  }
+  .list-item:hover{transform:translateY(-1px);border-color:var(--accent-dim);}
+  .list-item .ic-badge{
+    width:34px;height:34px;border-radius:9px;background:var(--accent-deep);
+    display:flex;align-items:center;justify-content:center;color:var(--accent);flex:none;
+  }
+  .list-item .ic-badge svg{width:16px;height:16px;}
+  .list-item .meta{flex:1;min-width:0;}
+  .list-item .meta b{display:block;font-size:14px;color:#f1faf3;}
+  .list-item .meta small{color:#c3d8c9;font-size:12px;}
+  .list-item .tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+  .pill{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;
+    background:var(--accent-deep);color:var(--accent);
+  }
+  .pill.on-white{background:#e7f4ea;color:#1f5a30;}
+  .pill.warn{background:#f7ecd6;color:#8a5f11;}
+  .pill.danger{background:#fbe4e4;color:#9c2f2f;}
+  .pill.muted{background:#eef1ef;color:#586a5f;}
+  .chev{color:#9db3a4;font-size:16px;}
+
+  .btn{
+    border:none;border-radius:999px;padding:10px 18px;font-weight:700;font-size:13px;
+    cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.15s;
+  }
+  .btn svg{width:14px;height:14px;}
+  .btn-primary{background:#2f6b40;color:#eafbee;}
+  .btn-primary:hover{background:#356f45;}
+  .btn-ghost{background:rgba(255,255,255,.08);color:var(--ink);border:1px solid var(--glass-brd);}
+  .btn-ghost:hover{background:rgba(255,255,255,.14);}
+  .btn-danger{background:rgba(230,126,126,.16);color:#ffb3b3;border:1px solid rgba(230,126,126,.35);}
+  .btn-sm{padding:7px 13px;font-size:12px;}
+  .row-between{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+  .tabs{display:flex;gap:6px;margin:18px 0 16px;background:rgba(255,255,255,.05);padding:5px;border-radius:999px;width:fit-content;border:1px solid var(--glass-brd);}
+  .tabs button{background:none;border:none;color:var(--ink-dim);font-weight:700;font-size:12.5px;padding:8px 16px;border-radius:999px;cursor:pointer;}
+  .tabs button.active{background:var(--accent);color:#06170d;}
+
+  .avatar{
+    width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--accent-deep);color:var(--accent);font-weight:800;font-size:13px;flex:none;
+  }
+
+  .empty-state{
+    text-align:center;padding:38px 16px;color:var(--ink-faint);
+  }
+  .empty-state svg{width:34px;height:34px;margin-bottom:10px;opacity:.7;}
+  .empty-state p{margin:0;font-size:13px;}
+
+  /* ---------- Accordion (competencias) ---------- */
+  .acc{background:rgba(226,242,230,.20);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(18px) saturate(130%);-webkit-backdrop-filter:blur(18px) saturate(130%);border-radius:var(--radius-md);margin-bottom:10px;overflow:hidden;color:var(--ink);}
+  .acc-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;}
+  .acc-head .left{display:flex;align-items:center;gap:10px;}
+  .acc-head b{font-size:14px;}
+  .acc-head small{color:#c3d8c9;font-size:11px;display:block;}
+  .acc-body{padding:0 14px 12px;display:none;}
+  .acc.open .acc-body{display:block;}
+  .acc-sub{
+    background:rgba(239,248,241,.15);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:11px 13px;margin-bottom:8px;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+  }
+  .acc-sub .txt small{color:#5d7368;font-size:11px;}
+  .competencias-header{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;padding:0 2px;}
+  .competencias-subtitle{font-size:11px;color:var(--ink-faint);}
+
+
+  /* ---------- Modal ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(4,12,7,.6);backdrop-filter:blur(4px);
+    display:none;align-items:center;justify-content:center;z-index:50;padding:16px;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    width:100%;max-width:420px;background:rgba(238,244,238,.82);border:1px solid rgba(255,255,255,.5);color:#12261a;
+    border-radius:26px;padding:24px;max-height:88vh;overflow:auto;
+    backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
+    box-shadow:0 30px 70px rgba(0,0,0,.45);
+  }
+  .modal h3{margin:0 0 3px;font-size:18px;color:#12261a;}
+  .modal .sub{color:#5d7368;font-size:12px;margin-bottom:16px;}
+  .modal .close{position:relative;float:right;background:none;border:none;color:#5d7368;font-size:18px;cursor:pointer;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:11.5px;color:#5d7368;margin-bottom:5px;font-weight:600;}
+  .field input,.field textarea,.field select{
+    width:100%;background:#ffffff;border:1px solid #d7e6da;
+    border-radius:12px;padding:10px 12px;color:#12261a;font-size:13.5px;font-family:inherit;
+  }
+  .field textarea{resize:vertical;min-height:64px;}
+  .field input::placeholder,.field textarea::placeholder{color:#9db3a4;}
+  .chip-select{display:flex;flex-wrap:wrap;gap:6px;max-height:150px;overflow:auto;padding:2px;}
+  .chip{
+    border:1px solid #d7e6da;border-radius:999px;padding:6px 12px;font-size:12px;
+    cursor:pointer;color:#3d5347;background:#ffffff;
+  }
+  .chip.sel{background:var(--accent-deep);color:#eafbee;border-color:var(--accent-deep);font-weight:700;}
+  .chip.ficha-chip{display:inline-flex;align-items:center;gap:6px;}
+  .chip.ficha-chip .chip-check{display:none;font-weight:900;}
+  .chip.ficha-chip.sel .chip-check{display:inline;}
+  .chip.ficha-chip .chip-count{opacity:.72;font-size:10px;}
+  .seg{display:flex;gap:8px;}
+  .seg button{
+    flex:1;padding:10px;border-radius:12px;border:1px solid #d7e6da;background:#ffffff;
+    color:#3d5347;font-weight:700;font-size:12.5px;cursor:pointer;
+  }
+  .seg button.sel-good{background:#e3f5e6;border-color:#3f9256;color:#1f5a30;}
+  .seg button.sel-bad{background:#fbe4e4;border-color:#c85a5a;color:#9c2f2f;}
+
+  /* toast */
+  #toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:#0f2a1a;border:1px solid var(--accent-dim);color:var(--ink);
+    padding:12px 20px;border-radius:999px;font-size:13px;font-weight:600;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;z-index:80;
+    display:flex;align-items:center;gap:8px;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  #toast svg{width:15px;height:15px;color:var(--accent);}
+
+  .screen{display:none;}
+  .screen.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- Login ---------- */
+  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .login-split{display:flex;gap:18px;max-width:760px;width:100%;flex-wrap:wrap;}
+  .login-card{
+    flex:1.3;min-width:280px;background:rgba(15,32,21,.55);border:1px solid rgba(255,255,255,.14);
+    border-radius:26px;padding:34px 30px;backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+    box-shadow:0 25px 60px rgba(0,0,0,.35);
+  }
+  .login-card .logo{margin-bottom:26px;font-size:18px;}
+  .login-card .logo .v-mark{width:34px;height:34px;font-size:18px;}
+  .login-card h2{margin:0 0 20px;font-size:20px;font-weight:600;}
+  .login-field{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 14px;margin-bottom:12px;}
+  .login-field svg{width:16px;height:16px;color:var(--ink-faint);flex:none;}
+  .login-field input{flex:1;background:none;border:none;outline:none;color:var(--ink);font-size:13.5px;}
+  .login-field input::placeholder{color:var(--ink-faint);}
+  .login-help{font-size:11.5px;color:var(--ink-faint);margin:10px 0 20px;}
+  .login-go{
+    width:46px;height:46px;border-radius:50%;border:none;background:var(--accent-deep);
+    color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto;
+  }
+  .login-go svg{width:18px;height:18px;}
+  .login-panel{
+    flex:1;min-width:220px;border-radius:26px;overflow:hidden;position:relative;
+    background:radial-gradient(circle at 30% 30%, rgba(47,107,64,.55), rgba(6,23,13,.55) 75%);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+    box-shadow:0 25px 60px rgba(0,0,0,.35);
+    display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:26px 18px;
+  }
+  .login-panel .date{color:#eafbee;font-weight:700;font-size:22px;text-align:center;}
+  .login-panel .date small{display:block;font-size:12px;font-weight:400;color:#bcdcc4;}
+  .login-panel .check{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;}
+  .login-panel .check svg{width:26px;height:26px;color:#eafbee;}
+  .login-help-card{
+    background:rgba(15,32,21,.55);border:1px solid rgba(255,255,255,.14);border-radius:20px;
+    backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+    padding:14px 16px;margin-top:14px;max-width:760px;width:100%;display:flex;align-items:center;justify-content:space-between;
+  }
+  .login-help-card b{font-size:13px;}
+  .login-help-card small{color:var(--ink-faint);font-size:11.5px;display:block;}
+
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:8px;}
+
+  .api-note{
+    font-size:11px;color:var(--ink-faint);text-align:center;margin-top:26px;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .api-note .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;}
+
+  /* ============================================================
+     VICTORIA · DISEÑO COMPARTIDO CON LA INTERFAZ DEL APRENDIZ
+     Basado en los mismos tokens visuales del proyecto:
+     darkGreen #143520, mutedGreen #8fa47e, cards blancas,
+     radios amplios y tipografía limpia.
+     ============================================================ */
+  body{
+    background:
+      linear-gradient(rgba(3,7,5,.38),rgba(3,7,5,.48)),
+      url("/static/img/Fondo%20dasboard.jpg") center/cover fixed no-repeat;
+    color:#ffffff;
+  }
+
+  .app{
+    max-width:1140px;
+    padding:30px 20px 60px;
+  }
+
+  .app::before{
+    width:min(1140px,calc(100vw - 28px));
+    top:82px;
+    height:calc(100vh - 112px);
+    border-radius:35px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+  }
+
+  .topbar{
+    background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;
+    padding:12px 20px;
+    margin-bottom:30px;
+  }
+
+  .logo .v-mark{
+    background:#8fa47e;
+    color:#ffffff;
+  }
+
+  .nav{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:50px;
+    padding:5px;
+  }
+
+  .nav button{
+    color:rgba(255,255,255,.6);
+    padding:8px 14px;
+    border-radius:50px;
+  }
+
+  .nav button.active{
+    background:rgba(255,255,255,.06);
+    color:#ffffff;
+    padding:8px 14px;
+  }
+
+  .nav button.active span.lbl{display:inline;}
+
+  .icon-btn{
+    border-color:rgba(255,255,255,.08);
+    background:rgba(255,255,255,.05);
+  }
+
+  .crumb{
+    color:rgba(255,255,255,.4);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-size:12px;
+  }
+
+  h1.page-title{
+    font-size:32px;
+    font-weight:400;
+    margin:4px 0 24px;
+    color:#ffffff;
+  }
+
+  h1.page-title span{
+    color:rgba(255,255,255,.55);
+    font-size:13px;
+    margin-top:7px;
+  }
+
+  .glass-card{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:24px;
+    padding:20px;
+  }
+
+  .card-grid{
+    gap:16px;
+    margin-bottom:30px;
+  }
+
+  .stat-card{
+    background:rgba(255,255,255,.9);
+    border:0;
+    border-radius:24px;
+    color:#1c352d;
+    padding:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+  }
+
+  .stat-card .ic{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    background:rgba(28,53,45,.08);
+    color:#1c352d;
+  }
+
+  .stat-card b{
+    color:#1c352d;
+    font-size:16px;
+    font-weight:600;
+  }
+
+  .stat-card small{
+    color:#444444;
+    font-size:13px;
+  }
+
+  .section-title{
+    color:rgba(255,255,255,.6);
+    font-size:16px;
+    text-transform:none;
+    letter-spacing:0;
+    margin:24px 0 10px;
+    font-weight:400;
+  }
+
+  .list-item{
+    background:rgba(255,255,255,.9);
+    color:#1c352d;
+    border:0;
+    border-radius:20px;
+    padding:14px 20px;
+    margin-bottom:12px;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+    transition:transform .15s,box-shadow .15s;
+  }
+
+  .list-item:hover{
+    transform:translateY(-1px);
+    border-color:transparent;
+    box-shadow:0 12px 28px rgba(0,0,0,.10);
+  }
+
+  .list-item .ic-badge{
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    background:#8fa47e;
+    color:#ffffff;
+  }
+
+  .list-item .meta b{
+    color:#1c352d;
+    font-size:15px;
+    font-weight:600;
+    line-height:1.3;
+  }
+
+  .list-item .meta small{
+    color:#666666;
+    font-size:12px;
+    line-height:1.35;
+  }
+
+  .pill{
+    background:#143520;
+    color:#ffffff;
+    font-size:12px;
+    padding:6px 12px;
+  }
+
+  .pill.on-white{
+    background:#d1f2dc;
+    color:#146c43;
+  }
+
+  .pill.warn{
+    background:#fff1cf;
+    color:#8a5f11;
+  }
+
+  .pill.danger{
+    background:#fbe4e4;
+    color:#9c2f2f;
+  }
+
+  .pill.muted{
+    background:#eef1ef;
+    color:#586a5f;
+  }
+
+  .chev{
+    color:#8fa47e;
+    font-size:20px;
+  }
+
+  .avatar{
+    background:#8fa47e;
+    color:#ffffff;
+  }
+
+  .tabs{
+    background:rgba(255,255,255,.10);
+    border-color:rgba(255,255,255,.08);
+  }
+
+  .tabs button{
+    color:rgba(255,255,255,.75);
+  }
+
+  .tabs button.active{
+    background:#ffffff;
+    color:#1c352d;
+  }
+
+  .acc{
+    background:rgba(255,255,255,.04);
+    border-color:rgba(255,255,255,.08);
+    border-radius:20px;
+  }
+
+  .acc-head b{font-size:15px;}
+  .acc-head small{color:rgba(255,255,255,.55);}
+
+  .acc-sub{
+    background:rgba(255,255,255,.9);
+    border:0;
+    border-radius:18px;
+    padding:12px 16px;
+    color:#1c352d;
+  }
+
+  .acc-sub .txt small{color:#666666;}
+
+  .btn-primary{
+    background:#143520;
+    color:#ffffff;
+  }
+
+  .btn-primary:hover{background:#1a4329;}
+
+  .btn-ghost{
+    background:rgba(255,255,255,.10);
+    color:#ffffff;
+    border:1px solid rgba(255,255,255,.12);
+  }
+
+  .btn-ghost:hover{background:rgba(255,255,255,.16);}
+
+  .api-note{
+    color:rgba(255,255,255,.35);
+  }
+
+  @media(max-width:820px){
+    .app{padding:18px 14px 40px;}
+    h1.page-title{font-size:28px;}
+    .topbar{padding:10px 14px;}
+    .nav button span.lbl{display:none!important;}
+    .nav button.active span.lbl{display:none!important;}
+  }
+
+
+/* ======= VICTORIA · AJUSTE VISUAL DEFINITIVO COMPETENCIAS ======= */
+/* La cabecera replica la composición de la referencia: V aislada,
+   navegación en cápsula al centro y acciones en cápsula a la derecha. */
+.app{
+  width:min(1320px,calc(100vw - 64px));
+  max-width:none;
+  margin:0 auto;
+  padding:22px 0 70px;
+}
+.app::before{
+  width:min(1360px,calc(100vw - 28px));
+  top:86px;
+  height:calc(100vh - 110px);
+  border-radius:36px;
+  background:rgba(190,213,194,.045);
+  border:1px solid rgba(255,255,255,.055);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+}
+.topbar{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:22px;
+  min-height:66px;
+  padding:0;
+  margin:0 0 22px;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+.topbar .logo{
+  flex:0 0 54px;
+  min-width:54px;
+  height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:0;
+  font-size:0;
+}
+.topbar .v-logo-img{
+  width:43px;
+  height:43px;
+  object-fit:contain;
+  display:block;
+  filter:brightness(0) invert(1) drop-shadow(0 2px 5px rgba(255,255,255,.12));
+}
+.topbar .logo>span{display:none!important}
+.nav{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  max-width:920px;
+  height:56px;
+  margin:0 auto;
+  padding:6px 10px;
+  background:rgba(13,29,19,.48);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:30px;
+  box-shadow:0 14px 38px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.035);
+  backdrop-filter:blur(22px) saturate(125%);
+  -webkit-backdrop-filter:blur(22px) saturate(125%);
+}
+.nav button{
+  height:44px;
+  min-width:48px;
+  padding:9px 15px;
+  justify-content:center;
+  color:rgba(238,246,240,.68);
+  border-radius:22px;
+}
+.nav button.active{
+  color:#fff;
+  background:rgba(44,105,61,.60);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 4px 14px rgba(0,0,0,.10);
+}
+.nav button.active span.lbl{display:inline}
+.side-icons{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:7px!important;
+  padding:7px 9px;
+  background:rgba(13,29,19,.48);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:30px;
+  backdrop-filter:blur(22px) saturate(125%);
+  -webkit-backdrop-filter:blur(22px) saturate(125%);
+}
+.icon-btn{
+  width:42px;
+  height:42px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.11);
+}
+.icon-btn:hover{background:rgba(255,255,255,.09)}
+.logout-btn{
+  position:fixed !important;
+  left:28px !important;
+  bottom:24px !important;
+  top:auto !important;
+  right:auto !important;
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(13,35,21,.72);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:0 10px 30px rgba(0,0,0,.28);
+  z-index:1001;
+  cursor:pointer;
+}
+.logout-btn svg{width:25px;height:25px}
+.logout-btn span{display:none!important}
+.logout-btn{margin:0!important;align-self:auto!important}
+.task-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;position:relative;z-index:4}
+.task-action{height:32px;padding:6px 10px;border-radius:10px;border:1px solid rgba(39,72,54,.22);background:rgba(255,255,255,.84);color:#17382a;font-size:11px;font-weight:700;cursor:pointer;opacity:1;pointer-events:auto;position:relative;z-index:5}.task-action:disabled{opacity:.65;cursor:wait}
+.task-action:hover{background:#fff;transform:translateY(-1px)}
+.task-action.danger{color:#b23b3b;border-color:rgba(196,75,75,.25);background:rgba(255,245,245,.9)}
+.task-action.primary{background:#94bda0;border-color:#86aa91;color:#102e20}
+.task-action.replace{color:#1f5c38;background:#eef7ef;border-color:#b6d3bc}
+@media(max-width:820px){.task-actions{width:100%;justify-content:flex-start}.task-action{flex:1;min-width:76px}}
+
+/* Panel principal de Competencias: ancho, aire y vidrio como la referencia. */
+.competencias-page{
+  width:100%;
+  min-height:calc(100vh - 132px);
+  padding:30px 38px 38px;
+  background:rgba(183,208,188,.13)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:30px;
+  backdrop-filter:blur(24px) saturate(125%);
+  -webkit-backdrop-filter:blur(24px) saturate(125%);
+  box-shadow:0 18px 55px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.competencias-breadcrumb{
+  font-size:12px;
+  color:rgba(255,255,255,.78);
+  margin:0 0 8px;
+  letter-spacing:.01em;
+}
+.competencias-breadcrumb span{padding:0 8px;opacity:.7}
+.competencias-title{
+  font-size:30px;
+  line-height:1.15;
+  font-weight:400;
+  margin:0 0 28px;
+  color:#f3f7f4;
+}
+.competencias-columns{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:24px;
+  align-items:start;
+}
+.trimester-card{
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(214,229,217,.20);
+  border-radius:16px;
+  margin-bottom:12px;
+  overflow:hidden;
+  backdrop-filter:blur(17px) saturate(125%);
+  -webkit-backdrop-filter:blur(17px) saturate(125%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.trimester-head{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  border:0;
+  background:rgba(240,246,241,.72);
+  color:#1e3b2c;
+  padding:14px 17px;
+  cursor:pointer;
+  text-align:left;
+  min-height:62px;
+}
+.trimester-icon{
+  width:34px;height:34px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:#215b39;color:#e8f5eb;flex:none;
+}
+.trimester-icon svg{width:18px;height:18px}
+.trimester-copy{flex:1;min-width:0}
+.trimester-copy b{display:block;font-size:16px;font-weight:600}
+.trimester-copy small{display:block;font-size:11px;color:#607368;margin-top:3px}
+.trimester-card>.trimester-head .global-chevron{font-size:18px;color:#234f38;line-height:1;transition:transform .18s}
+.trimester-card.open>.trimester-head .global-chevron{transform:rotate(180deg)}
+.trimester-body{display:none;padding:10px 10px 12px;background:rgba(216,232,219,.16)}
+.trimester-card.open .trimester-body{display:block}
+.competencia-global-item{
+  margin:0 0 9px;
+  border-radius:13px;
+  background:rgba(235,244,237,.30);
+  border:1px solid rgba(255,255,255,.15);
+  overflow:hidden;
+}
+.competencia-global-item:last-child{margin-bottom:0}
+.competencia-global-head{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;cursor:pointer;
+}
+.competencia-icon{
+  width:31px;height:31px;border-radius:50%;
+  background:rgba(123,183,113,.70);color:#fff;
+  display:flex;align-items:center;justify-content:center;flex:none;
+}
+.competencia-icon svg{width:15px;height:15px}
+.competencia-copy{flex:1;min-width:0}
+.competencia-copy b{display:block;color:#274335;font-size:14px;font-weight:600}
+.competencia-copy small{display:block;color:#65776c;font-size:10.5px;margin-top:2px}
+.ficha-count{background:#195d38;color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:5px 10px;white-space:nowrap}
+.competencia-global-item .global-chevron{font-size:16px;color:#234f38;transition:transform .18s}
+.competencia-global-item.open .competencia-global-head .global-chevron{transform:rotate(180deg)}
+.competencia-fichas{display:none;padding:0 10px 9px}
+.competencia-global-item.open .competencia-fichas{display:block}
+.global-ficha-row{
+  width:100%;display:flex;align-items:center;gap:10px;
+  border:0;border-radius:11px;
+  background:rgba(247,249,247,.80);
+  padding:9px 11px;margin-top:6px;
+  color:#294335;text-align:left;cursor:pointer;
+}
+.global-ficha-row:hover{background:rgba(255,255,255,.94)}
+.ficha-icon{
+  width:29px;height:29px;border-radius:50%;background:#101812;color:#fff;
+  display:flex;align-items:center;justify-content:center;flex:none;
+}
+.ficha-icon svg{width:14px;height:14px}
+.global-ficha-row>span:nth-child(2){flex:1;min-width:0}
+.global-ficha-row b{display:block;font-size:12.5px;font-weight:600}
+.global-ficha-row small{display:block;font-size:10px;color:#6b7a71;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.global-ficha-row .global-chevron{font-size:15px}
+.trimester-empty{font-size:11px;color:#6c7b72;padding:13px}
+
+/* Detalle de ficha: mantiene Competencias abierta al entrar desde una ficha. */
+#screen-ficha .tabs{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16)}
+#screen-ficha .tabs button.active{background:#f4f6f4;color:#18372a}
+#fichaCompetencias .competencias-header{margin-top:2px}
+.acc{background:rgba(226,242,230,.24);border:1px solid rgba(255,255,255,.22)}
+.acc.open{background:rgba(226,242,230,.28)}
+.acc-head{padding:15px 17px}
+.acc-head .left{gap:12px}
+.acc-head .left>.pill{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;background:#215b39!important;color:#fff!important}
+.acc-head b{font-size:15px}
+.acc-sub{background:rgba(247,250,247,.82);border:1px solid rgba(255,255,255,.5);border-radius:14px;padding:12px 14px;color:#1d382a}
+.acc-sub .txt b{color:#274335}
+.acc-sub .txt small{color:#66766d}
+
+@media(max-width:980px){
+  .app{width:min(100% - 28px,1320px)}
+  .nav{max-width:none}
+  .competencias-page{padding:26px 24px 30px}
+}
+@media(max-width:820px){
+  .app{padding:16px 0 50px;width:calc(100% - 20px)}
+  .topbar{gap:8px}
+  .topbar .logo{flex-basis:42px;min-width:42px}
+  .topbar .v-logo-img{width:35px;height:35px}
+  .nav{height:50px;padding:4px 6px}
+  .nav button{height:40px;min-width:42px;padding:8px 11px}
+  .nav button span.lbl{display:none!important}
+  .nav button.active span.lbl{display:none!important}
+  .side-icons{padding:4px}
+  .icon-btn{width:38px;height:38px}
+  .competencias-page{padding:22px 16px;min-height:calc(100vh - 100px)}
+  .competencias-columns{grid-template-columns:1fr;gap:0}
+  .competencias-title{font-size:27px}
+  .logout-btn{left:16px;bottom:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="screen active" id="screen-login">
+  <div class="login-wrap">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+      <div class="login-split">
+        <div class="login-card">
+          <div class="logo"><img src="{{ url_for('static', path='img/v_logo_original.png') }}" alt="VICTORIA" class="v-logo-img"><span>VICTORIA</span></div>
+          <h2>Log in</h2>
+          <div class="login-field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+            <input id="loginUser" placeholder="usuario" value="Ulanico Andrade">
+          </div>
+          <div class="login-field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+            <input id="loginPass" type="password" placeholder="contraseña" value="••••••••">
+          </div>
+          <div class="login-help">¿Olvidaste tu contraseña? Podrás ver tus repuestas y mantenerte activo, incluyendo permitirte volver a ingresar.</div>
+          <div style="display:flex;justify-content:flex-end;"><button class="login-go" id="loginBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button></div>
+        </div>
+        <div class="login-panel">
+          <div class="date">Jun<br><span style="font-size:30px;">2026</span></div>
+          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg></div>
+        </div>
+      </div>
+      <div class="login-help-card">
+        <div><b>¿Necesitas ayuda?</b><small>da click aquí</small></div>
+        <button class="icon-btn" style="background:var(--accent-deep);color:var(--accent);border:none;">→</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app" style="display:none;" id="mainApp">
+  <div class="topbar">
+    <div class="logo"><img src="{{ url_for('static', path='img/v_logo_original.png') }}" alt="VICTORIA" class="v-logo-img"><span>VICTORIA</span></div>
+    <nav class="nav" id="mainNav">
+      <button data-screen="home" class="active" title="Inicio">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        <span class="lbl">Inicio</span>
+      </button>
+      <button data-screen="fichas" title="Mis Fichas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+        <span class="lbl">Fichas</span>
+      </button>
+      <button data-screen="competencias" title="Competencias">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 8 4-8 4-8-4 8-4Z"/><path d="m4 12 8 4 8-4"/><path d="m4 17 8 4 8-4"/></svg>
+        <span class="lbl">Competencias</span>
+      </button>
+      <button data-screen="materiales" title="Materiales">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span class="lbl">Materiales</span>
+      </button>
+    </nav>
+    <div class="side-icons">
+      <div class="icon-btn" id="bellBtn" title="Notificaciones">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="dot-badge" id="bellDot">0</span>
+      </div>
+      <button class="icon-btn" id="profileBtn" type="button" title="Perfil del instructor" aria-label="Perfil del instructor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Cerrar sesión: fijo e independiente de la barra superior -->
+  <button class="logout-btn" id="logoutBtn" type="button" title="Cerrar sesión" aria-label="Cerrar sesión">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+  </button>
+
+  <!-- ============ HOME ============ -->
+  <div class="screen active" id="screen-home">
+    <div class="crumb">VICTORIA · Instructor</div>
+    <h1 class="page-title">Bienvenido, Instructor <span id="homeSub">Cargando resumen desde la API…</span></h1>
+    <div class="card-grid" id="statGrid"></div>
+
+    <div class="row-between">
+      <div class="section-title" style="margin-top:6px;">Fichas asignadas</div>
+      <button class="btn btn-ghost btn-sm" data-screen="fichas">Ver todas</button>
+    </div>
+    <div id="homeFichas"></div>
+
+    <div class="section-title">Evidencias por calificar</div>
+    <div id="homePending"></div>
+  </div>
+
+  <!-- ============ MIS FICHAS ============ -->
+  <!-- ============ PERFIL ============ -->
+  <div class="screen" id="screen-perfil">
+    <div class="perfil-wrap">
+      <div class="crumb">VICTORIA · Instructor · Perfil</div>
+      <h1 class="page-title">Mi perfil <span>Información de tu cuenta de instructor</span></h1>
+      <div class="glass-card">
+        <div class="perfil-hero">
+          <div class="perfil-avatar" id="perfilAvatar">I</div>
+          <div>
+            <div class="perfil-kicker">Instructor</div>
+            <h2 class="perfil-name" id="perfilNombre">Cargando...</h2>
+            <p class="perfil-role" id="perfilRol">Instructor VICTORIA</p>
+          </div>
+        </div>
+        <div class="perfil-grid">
+          <div class="perfil-info"><span class="label">Nombre completo</span><div class="value" id="perfilNombreInfo">—</div></div>
+          <div class="perfil-info"><span class="label">ID de usuario</span><div class="value" id="perfilId">—</div></div>
+          <div class="perfil-info"><span class="label">Rol</span><div class="value" id="perfilRolInfo">Instructor</div></div>
+          <div class="perfil-info"><span class="label">Estado de sesión</span><div class="value"><span class="perfil-status">Sesión activa</span></div></div>
+        </div>
+        <div class="perfil-section-title">Cuenta</div>
+        <div class="perfil-info perfil-session">
+          <div><span class="label">Acceso</span><div class="value">Cuenta de instructor VICTORIA</div></div>
+          <button class="btn btn-ghost btn-sm" id="perfilLogoutBtn" type="button">Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-fichas">
+    <div class="crumb">VICTORIA · Instructor</div>
+    <h1 class="page-title">Mis Fichas <span>Fichas de formación asignadas a tu perfil (GET /instructores/:id/fichas)</span></h1>
+    <div id="fichasList"></div>
+  </div>
+
+  <!-- ============ COMPETENCIAS ============ -->
+  <div class="screen" id="screen-competencias">
+    <div class="competencias-page glass-card">
+      <div class="competencias-breadcrumb">VICTORIA <span>•</span> Competencias gestión de muestras</div>
+      <h1 class="competencias-title">Competencias</h1>
+      <div id="competenciasGlobal"></div>
+    </div>
+  </div>
+
+  <!-- ============ FICHA DETAIL ============ -->
+  <div class="screen" id="screen-ficha">
+    <div class="crumb"><button data-screen="fichas">← Volver a Fichas</button></div>
+    <h1 class="page-title" id="fichaTitle">Ficha</h1>
+    <div class="tabs" id="fichaTabs">
+      <button data-tab="aprendices" class="active">Aprendices</button>
+      <button data-tab="entregables">Entregables</button>
+      <button data-tab="competencias">Competencias</button>
+    </div>
+    <div id="fichaAprendices"></div>
+    <div id="fichaEntregables" style="display:none"></div>
+    <div id="fichaCompetencias" style="display:none"></div>
+  </div>
+
+  <!-- ============ APRENDIZ PORTFOLIO ============ -->
+  <div class="screen" id="screen-aprendiz">
+    <div class="crumb"><button id="backToFichaFromAprendiz">← Volver a la ficha</button></div>
+    <h1 class="page-title" id="aprendizTitle">Aprendiz</h1>
+    <div class="glass-card" id="aprendizPortfolio"></div>
+  </div>
+
+  <!-- ============ ENTREGABLE / EVIDENCIAS ============ -->
+  <div class="screen" id="screen-entregable">
+    <div class="crumb"><button id="backToFichaFromEntregable">← Volver a la ficha</button></div>
+    <h1 class="page-title" id="entregableTitle">Entregable</h1>
+    <div class="glass-card" id="entregableInfo" style="margin-bottom:18px;"></div>
+    <div class="section-title">Evidencias entregadas</div>
+    <div id="evidenciasList"></div>
+  </div>
+
+  <!-- ============ MATERIALES ============ -->
+  <div class="screen" id="screen-materiales">
+    <div class="crumb">VICTORIA · Instructor</div>
+    <div class="row-between">
+      <h1 class="page-title" style="margin-bottom:0">Materiales y Recursos <span>Apoyo pedagógico asociado a tus competencias</span></h1>
+      <button class="btn btn-primary" id="openMaterialModal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+        Nuevo material
+      </button>
+    </div>
+    <div id="materialesList" style="margin-top:16px;"></div>
+  </div>
+
+  <!-- ============ NOTIFICACIONES ============ -->
+  <div class="screen" id="screen-notificaciones">
+    <div class="crumb">VICTORIA · Instructor</div>
+    <div class="row-between">
+      <h1 class="page-title" style="margin-bottom:0">Notificaciones <span>Bandeja del instructor y envíos a aprendices</span></h1>
+      <button class="btn btn-primary" id="openNotifModal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        Enviar notificación
+      </button>
+    </div>
+    <div id="notifList" style="margin-top:16px;"></div>
+  </div>
+
+  <div class="api-note"><span class="dot"></span> Datos servidos por FastAPI; respaldo local si el servidor no responde. Endpoints centralizados en API_ROUTES.</div>
+</div>
+
+<!-- ---------- MODAL: Nueva Tarea (Entregable) ---------- -->
+<div class="overlay" id="modalEntregable">
+  <div class="modal">
+    <button class="close" data-close>×</button>
+    <h3>Nueva Tarea</h3>
+    <div class="sub" id="modalEntregableSub">Ficha —</div>
+    <div class="field"><label>Título de la evidencia</label><input id="entTitulo" placeholder="Ej. Trabajo sesión 2 - ejercicio práctico"></div>
+    <div class="field"><label>Descripción</label><textarea id="entDescripcion" placeholder="Resolver lo indicado en la guía, de manera individual…"></textarea></div>
+    <div class="field"><label>Criterio de evaluación</label><input id="entCriterio" placeholder="Ej. Aplica correctamente el modelo entidad-relación"></div>
+    <div class="field"><label>Fecha inicio</label><input id="entInicio" type="date"></div>
+    <div class="field"><label>Fecha límite</label><input id="entFin" type="date"></div>
+    <div class="field"><label>Asignar a fichas</label><div class="sub" style="margin:0 0 7px;font-size:11px;color:#5d7368;">Puedes seleccionar una o varias fichas. La tarea se enviará a todos los aprendices de las fichas seleccionadas.</div><div class="chip-select" id="entFichas"></div><div id="entFichasResumen" style="margin-top:7px;font-size:11px;color:#5d7368;"></div></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" id="saveEntregable">Crear Tarea</button>
+  </div>
+</div>
+
+<!-- ---------- MODAL: Editar / Reemplazar Tarea ---------- -->
+<div class="overlay" id="modalEditarTarea">
+  <div class="modal">
+    <button class="close" data-close>×</button>
+    <h3 id="editTaskHeading">Editar Tarea</h3>
+    <div class="sub" id="editTaskSub">Actualiza la información de la tarea.</div>
+    <div class="field"><label>Título de la tarea</label><input id="editEntTitulo" placeholder="Título de la tarea"></div>
+    <div class="field"><label>Descripción</label><textarea id="editEntDescripcion" placeholder="Descripción de la tarea…"></textarea></div>
+    <div class="field"><label>Criterio de evaluación</label><input id="editEntCriterio" placeholder="Criterio de evaluación"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="field"><label>Fecha inicio</label><input id="editEntInicio" type="date"></div>
+      <div class="field"><label>Fecha límite</label><input id="editEntFin" type="date"></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" id="saveEditEntregable">Actualizar Tarea</button>
+  </div>
+</div>
+
+<!-- ---------- MODAL: Calificar Evidencia ---------- -->
+<div class="overlay" id="modalCalificar">
+  <div class="modal">
+    <button class="close" data-close>×</button>
+    <h3>Calificar evidencia</h3>
+    <div class="sub" id="modalCalificarSub">Aprendiz —</div>
+    <div class="field"><label>Criterio de evaluación</label>
+      <div style="font-size:12.5px;color:var(--ink-dim);background:rgba(255,255,255,.05);border:1px solid var(--glass-brd);border-radius:12px;padding:10px 12px;" id="calCriterio">—</div>
+    </div>
+    <div class="field"><label>Resultado</label>
+      <div class="seg" id="calResultado">
+        <button type="button" data-val="aprobada" class="rbtn">Aprobada</button>
+        <button type="button" data-val="rechazada" class="rbtn">No aprobada</button>
+      </div>
+    </div>
+    <div class="field"><label>Observaciones</label><textarea id="calObs" placeholder="Retroalimentación para el aprendiz…"></textarea></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" id="saveCalificacion">Registrar calificación</button>
+  </div>
+</div>
+
+<!-- ---------- MODAL: Añadir Aprendiz ---------- -->
+<div class="overlay" id="modalAprendiz">
+  <div class="modal">
+    <button class="close" data-close>×</button>
+    <h3>Añadir Aprendiz</h3>
+    <div class="sub" id="modalAprendizSub">Fichas · Añadir a la ficha</div>
+    <div class="field"><label>Nombre del aprendiz</label><input id="apNombre" placeholder="Nombre y apellido"></div>
+    <div class="field"><label>Número de documento</label><input id="apDoc" placeholder="Documento de identidad"></div>
+    <div class="field"><label>Información principal del aprendiz</label><textarea id="apInfo" placeholder="Correo, teléfono, observaciones…"></textarea></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" id="saveAprendiz">Añadir Aprendiz</button>
+  </div>
+</div>
+
+<!-- ---------- MODAL: Nueva/editar Competencia ---------- -->
+<div class="overlay" id="modalCompetencia">
+  <div class="modal">
+    <button class="close" data-close>×</button>
+    <h3>Nuevo resultado de aprendizaje</h3>
+    <div class="sub" id="modalCompSub">Competencia —</div>
+    <div class="field"><label>Nombre del resultado</label><input id="raNombre" placeholder="Ej. Diseña el modelo relacional de la BD"></div>
+    <div class="field"><label>Etapa</label>
+      <select id="raEtapa"><option>Lectiva</option><option>Productiva</option></select>
+    </div>
+    <div class="field"><label>Criterio de evaluación</label><textarea id="raCriterio" placeholder="Qué debe demostrar el aprendiz…"></textarea></div>
+    <div class="field"><label>Duración máxima (horas)</label><input id="raHoras" type="number" placeholder="40"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" id="saveCompetencia">Guardar resultado</button>
+  </div>
+</div>
+
+<!-- ---------- MODAL: Nuevo Material ---------- -->
+<div class="overlay" id="modalMaterial">
+  <div class="modal">
+    <button class="close" data-close>×</button>
+    <h3>Nuevo material</h3>
+    <div class="sub">Material · Registrar apoyo pedagógico</div>
+    <div class="field"><label>Nombre del material</label><input id="matNombre" placeholder="Ej. Guía Arquitectura de software"></div>
+    <div class="field"><label>Tipo</label>
+      <select id="matTipo"><option>Guía</option><option>Video</option><option>Documento</option><option>Presentación</option></select>
+    </div>
+    <div class="field"><label>Cantidad</label><input id="matCantidad" type="number" placeholder="1"></div>
+    <div class="field"><label>URL / enlace del recurso</label><input id="matUrl" placeholder="https://…"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" id="saveMaterial">Registrar material</button>
+  </div>
+</div>
+
+<!-- ---------- MODAL: Enviar Notificación ---------- -->
+<div class="overlay" id="modalNotif">
+  <div class="modal">
+    <button class="close" data-close>×</button>
+    <h3>Enviar notificación</h3>
+    <div class="sub">Selecciona ficha y destinatarios</div>
+    <div class="field"><label>Ficha</label><select id="notifFicha"></select></div>
+    <div class="field"><label>Destinatarios</label><div class="chip-select" id="notifDest"></div></div>
+    <div class="field"><label>Asunto</label><input id="notifTitulo" placeholder="Ej. Recuerda entregar el taller"></div>
+    <div class="field"><label>Mensaje</label><textarea id="notifMsg" placeholder="Escribe el mensaje…"></textarea></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" id="saveNotif">Enviar</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* =========================================================================
+   API REAL DE VICTORIA
+   Cambia API_BASE_URL si tu FastAPI usa otra dirección.
+   ========================================================================= */
+const API_BASE_URL = localStorage.getItem('victoria_api_url') || window.location.origin;
+const API_ROUTES = {
+  fichasInstructor: id => `/api/instructores/${id}/fichas`,
+  ficha: id => `/api/fichas/${id}`,
+  aprendices: id => `/api/instructores/fichas/${id}/aprendices`,
+  competencias: id => `/api/instructores/fichas/${id}/competencias`,
+  resultados: id => `/api/competencias/${id}/resultados`,
+  entregables: id => `/api/instructores/fichas/${id}/entregables`,
+  entregable: id => `/api/instructores/entregables/${id}`,
+  evidencias: id => `/api/instructores/entregables/${id}/evidencias`,
+  materiales: id => `/api/instructores/${id}/materiales`,
+  notificaciones: id => `/api/instructores/${id}/notificaciones`
+};
+async function apiRequest(path, options={}){
+  const token = sessionStorage.getItem('victoria_token');
+  const headers = {
+    ...(options.body ? {'Content-Type':'application/json'} : {}),
+    ...(options.headers || {})
+  };
+  if(token) headers['Authorization'] = `Bearer ${token}`;
+  const r = await fetch(API_BASE_URL + path, {...options, headers});
+  if(!r.ok){
+    if(r.status === 401){
+      sessionStorage.removeItem('victoria_token');
+      window.location.href = '/login';
+      return null;
+    }
+    throw new Error(`API ${r.status}: ${await r.text()}`);
+  }
+  const t = await r.text();
+  return t ? JSON.parse(t) : null;
+}
+/* =========================================================================
+   CAPA API SIMULADA / RESPALDO
+   Estas funciones imitan endpoints REST reales (GET/POST/PATCH) sobre las
+   entidades del modelo de datos de VICTORIA (Ficha, Competencia,
+   Resultado_aprendizaje, Usuario, Entregable, Evidencia, Seguimiento,
+   Notificacion, Material). Usan window.storage como base de datos temporal;
+   para conectar el backend real basta con reemplazar el cuerpo de cada
+   función por un fetch() a la URL del API definitiva.
+   ========================================================================= */
+const DB_KEY = 'victoria_instructor_db_v1';
+let INSTRUCTOR = { id_usuario: 1, nombre_apellido: 'Instructor', rol: 'instructor' };
+
+function uid(prefix){ return prefix + '_' + Math.random().toString(36).slice(2,9); }
+
+function seedDB(){
+  const fichas = [
+    { id_ficha: 3407169, programa: 'Análisis y desarrollo de software', trimestre: 'Trimestre 1', estado: 'activa', fecha_inicio: '2026-02-02' },
+    { id_ficha: 3407178, programa: 'Análisis y desarrollo de software', trimestre: 'Trimestre 1', estado: 'activa', fecha_inicio: '2026-02-02' },
+    { id_ficha: 3407146, programa: 'Análisis y desarrollo de software', trimestre: 'Trimestre 1', estado: 'activa', fecha_inicio: '2026-02-16' },
+  ];
+
+  const aprendicesNames = {
+    3407169: ['Aslhi Castañeda','Michel Barraza','Karol Perez','Miguel Castañeda','Alexandra Martinez','Samir Yusuf','Diego Pamplona','Maryuri Maestre','Henrry Velandia','Rafael Nuñez','Oscar Hoyos'],
+    3407178: ['Laura Gómez','Camilo Ríos','Valentina Ortiz','Julián Rueda'],
+    3407146: ['Sara Peña','Andrés Salazar','Natalia Cruz'],
+  };
+  const usuarios = [];
+  let uCounter = 1;
+  Object.entries(aprendicesNames).forEach(([ficha, names]) => {
+    names.forEach(n => usuarios.push({
+      id_usuario: 100 + uCounter++, nombre_apellido: n, rol: 'aprendiz',
+      id_ficha: Number(ficha), estado: 'activo'
+    }));
+  });
+
+  const competencias = [
+    { id_competencia: 1, nombre: 'Base de datos', id_ficha: 3407169, resultados: [] },
+    { id_competencia: 2, nombre: 'Arquitectura de software', id_ficha: 3407169, resultados: [] },
+    { id_competencia: 3, nombre: 'Backend y Frontend', id_ficha: 3407178, resultados: [] },
+    { id_competencia: 4, nombre: 'Fundamentos de programación', id_ficha: 3407146, resultados: [] },
+  ];
+  const resultados = [
+    { id_resultado: 1, id_competencia: 1, nombre_resultado: 'Diseña el modelo entidad-relación', etapa: 'Lectiva', criterio_evaluacion: 'Aplica correctamente normalización hasta 3FN', duracion_maxima_horas: 40 },
+    { id_resultado: 2, id_competencia: 2, nombre_resultado: 'Aplica patrones de arquitectura de software', etapa: 'Lectiva', criterio_evaluacion: 'Justifica la elección de la arquitectura según requisitos', duracion_maxima_horas: 48 },
+    { id_resultado: 3, id_competencia: 3, nombre_resultado: 'Implementa servicios backend con persistencia', etapa: 'Productiva', criterio_evaluacion: 'El servicio expone endpoints y persiste datos correctamente', duracion_maxima_horas: 60 },
+  ];
+
+  const cronogramas = [
+    { id_cronograma: 1, id_ficha: 3407169, instructor: INSTRUCTOR.nombre_apellido, trimestre: 'Trimestre 1', anio: 2026 },
+    { id_cronograma: 2, id_ficha: 3407178, instructor: INSTRUCTOR.nombre_apellido, trimestre: 'Trimestre 1', anio: 2026 },
+    { id_cronograma: 3, id_ficha: 3407146, instructor: INSTRUCTOR.nombre_apellido, trimestre: 'Trimestre 1', anio: 2026 },
+  ];
+
+  const entregables = [
+    { id_entregable: 1, id_cronograma: 1, id_ficha: 3407169, nombre_entregable: 'Trabajo sesión 1 - ejercicio práctico', descripcion: 'Resolver lo indicado en la guía de manera individual teniendo en cuenta prácticas en clase', criterio_evaluacion: 'Aplica correctamente normalización hasta 3FN', fecha_inicio: '2026-06-01', fecha_fin: '2026-10-06' },
+    { id_entregable: 2, id_cronograma: 1, id_ficha: 3407169, nombre_entregable: 'Trabajo Backend - ejercicio práctico', descripcion: 'Diseñar y sustentar la arquitectura propuesta', criterio_evaluacion: 'Justifica la elección de la arquitectura según requisitos', fecha_inicio: '2026-08-01', fecha_fin: '2026-09-22' },
+    { id_entregable: 3, id_cronograma: 1, id_ficha: 3407169, nombre_entregable: 'Carpetas organizadas - Cajas de preguntas', descripcion: 'Organizar el portafolio por competencia', criterio_evaluacion: 'El portafolio está completo y organizado', fecha_inicio: '2026-06-01', fecha_fin: '2026-07-01' },
+    { id_entregable: 4, id_cronograma: 2, id_ficha: 3407178, nombre_entregable: 'Diseño de API REST', descripcion: 'Definir contratos de endpoints del proyecto formativo', criterio_evaluacion: 'El servicio expone endpoints y persiste datos correctamente', fecha_inicio: '2026-08-10', fecha_fin: '2026-09-30' },
+  ];
+
+  const aprendices169 = usuarios.filter(u => u.id_ficha === 3407169);
+  const evidencias = [];
+  let evId = 1;
+  aprendices169.forEach((a, i) => {
+    evidencias.push({
+      id_evidencia: evId++, titulo: 'Taller 2 - Plan.docx', id_entregable: 1, id_usuario: a.id_usuario,
+      estado: i % 3 === 0 ? 'pendiente' : (i % 3 === 1 ? 'aprobada' : 'entregado'),
+      fecha_carga: '2026-08-2' + (i % 9)
+    });
+  });
+  aprendices169.slice(0,4).forEach((a,i)=>{
+    evidencias.push({
+      id_evidencia: evId++, titulo: 'Mapa 1 - Plan.docx', id_entregable: 2, id_usuario: a.id_usuario,
+      estado: i === 0 ? 'entregado' : 'pendiente', fecha_carga: '2026-08-1'+i
+    });
+  });
+
+  const seguimientos = [];
+
+  const notificaciones = [
+    { id_notificacion: 1, titulo_notificacion: 'Evaluación de desempeño disponible', tipo: 'coordinacion', mensaje: 'El coordinador de tu área ha habilitado tu formulario de evaluación trimestral.', origen: 'manual', estado: 'no_leida', fecha_creacion: '2026-08-20', id_usuario: INSTRUCTOR.id_usuario, para: 'instructor' },
+    { id_notificacion: 2, titulo_notificacion: 'Nueva ficha asignada', tipo: 'ficha', mensaje: 'Se te asignó la ficha 3407146 - Análisis y desarrollo de software.', origen: 'automatica', estado: 'no_leida', fecha_creacion: '2026-08-15', id_usuario: INSTRUCTOR.id_usuario, para: 'instructor' },
+  ];
+
+  const materiales = [
+    { id_material: 1, nombre_material: 'Guía Arquitectura de software', tipo_material: 'Guía', formato_material: 'PDF', cantidad: 30, estado: 'disponible', url_material: '#' },
+    { id_material: 2, nombre_material: 'Video Modelo Entidad-Relación', tipo_material: 'Video', formato_material: 'MP4', cantidad: 1, estado: 'disponible', url_material: '#' },
+  ];
+
+  return { fichas, usuarios, competencias, resultados, cronogramas, entregables, evidencias, seguimientos, notificaciones, materiales };
+}
+
+let DB = null;
+
+async function dbLoad(){
+  try{ const raw=localStorage.getItem(DB_KEY); DB=raw?JSON.parse(raw):seedDB(); if(!raw) await dbSave(); }
+  catch(e){ DB=seedDB(); await dbSave(); }
+}
+async function dbSave(){ localStorage.setItem(DB_KEY, JSON.stringify(DB)); }
+function delay(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+const API = {
+  async getFichasInstructor(){
+    await delay(120);
+    return DB.fichas.map(f => ({
+      ...f,
+      total_aprendices: DB.usuarios.filter(u=>u.id_ficha===f.id_ficha).length
+    }));
+  },
+  async getFicha(id){ await delay(80); return DB.fichas.find(f=>f.id_ficha===id); },
+  async getAprendices(idFicha){ await delay(80); return DB.usuarios.filter(u=>u.id_ficha===idFicha); },
+  async addAprendiz(idFicha, payload){
+    await delay(150);
+    const nuevo = { id_usuario: uid('u'), nombre_apellido: payload.nombre, rol:'aprendiz', id_ficha: idFicha, estado:'activo', documento: payload.documento, info: payload.info };
+    DB.usuarios.push(nuevo); await dbSave(); API_REAL=false; return nuevo;
+  },
+  async getCompetencias(idFicha){ await delay(90); return DB.competencias.filter(c=>c.id_ficha===idFicha); },
+  async getResultados(idCompetencia){ await delay(60); return DB.resultados.filter(r=>r.id_competencia===idCompetencia); },
+  async addResultado(idCompetencia, payload){
+    await delay(150);
+    const nuevo = { id_resultado: uid('r'), id_competencia: idCompetencia, ...payload };
+    DB.resultados.push(nuevo); await dbSave(); return nuevo;
+  },
+  async getEntregables(idFicha){ await delay(90); return DB.entregables.filter(e=> e.id_ficha===idFicha || (Array.isArray(e.id_fichas) && e.id_fichas.includes(Number(idFicha))) ); },
+  async getEntregable(id){ await delay(60); return DB.entregables.find(e=>e.id_entregable===id); },
+  async addEntregable(idFicha, payload){
+    await delay(180);
+    const idFichas = (payload.id_fichas || [idFicha]).map(Number);
+    const primeraFicha = idFichas[0] || Number(idFicha);
+    const nuevo = {
+      id_entregable: uid('e'),
+      id_ficha: primeraFicha,
+      id_fichas: idFichas,
+      id_cronograma: (DB.cronogramas.find(c=>c.id_ficha===primeraFicha)||{}).id_cronograma,
+      ...payload
+    };
+    delete nuevo.asignados;
+    DB.entregables.push(nuevo);
+
+    // Notificar a todos los aprendices pertenecientes a las fichas seleccionadas.
+    const destinatarios = DB.usuarios
+      .filter(u=>u.rol==='aprendiz' && idFichas.includes(Number(u.id_ficha)))
+      .map(u=>u.id_usuario);
+    destinatarios.forEach(idUsuario=>{
+      DB.notificaciones.push({
+        id_notificacion: uid('n'), titulo_notificacion:'Nuevo entregable asignado', tipo:'entregable',
+        mensaje:`Se te asignó el entregable "${payload.nombre_entregable}". Fecha límite: ${payload.fecha_fin}`,
+        origen:'automatica', estado:'no_leida', fecha_creacion: new Date().toISOString().slice(0,10),
+        id_usuario: idUsuario, para:'aprendiz'
+      });
+    });
+    await dbSave(); return nuevo;
+  },
+  async updateEntregable(id, payload){
+    await delay(150);
+    const ent = DB.entregables.find(e=>String(e.id_entregable)===String(id));
+    if(!ent) throw new Error('Tarea no encontrada');
+    Object.assign(ent, payload);
+    await dbSave();
+    return ent;
+  },
+  async deleteEntregable(id){
+    await delay(150);
+    const idx = DB.entregables.findIndex(e=>String(e.id_entregable)===String(id));
+    if(idx < 0) throw new Error('Tarea no encontrada');
+    DB.entregables.splice(idx,1);
+    DB.evidencias = DB.evidencias.filter(e=>String(e.id_entregable)!==String(id));
+    DB.seguimientos = DB.seguimientos.filter(s=>{
+      const ev = DB.evidencias.find(e=>e.id_evidencia===s.id_evidencia);
+      return !!ev;
+    });
+    await dbSave();
+  },
+  async replaceEntregable(id, payload){
+    return this.updateEntregable(id, {
+      nombre_entregable: payload.nombre_entregable,
+      descripcion: payload.descripcion,
+      criterio_evaluacion: payload.criterio_evaluacion,
+      fecha_inicio: payload.fecha_inicio,
+      fecha_fin: payload.fecha_fin
+    });
+  },
+  async getEvidencias(idEntregable){ await delay(90); return DB.evidencias.filter(e=>e.id_entregable===idEntregable); },
+  async getEvidenciasPendientesPorFicha(idFicha){
+    await delay(90);
+    const idsEnt = DB.entregables.filter(e=> e.id_ficha===idFicha || (Array.isArray(e.id_fichas) && e.id_fichas.includes(Number(idFicha)))).map(e=>e.id_entregable);
+    return DB.evidencias.filter(ev => idsEnt.includes(ev.id_entregable) && (ev.estado==='entregado' || ev.estado==='pendiente'));
+  },
+  async calificarEvidencia(idEvidencia, payload){
+    await delay(200);
+    const ev = DB.evidencias.find(e=>e.id_evidencia===idEvidencia);
+    ev.estado = payload.resultado; // 'aprobada' | 'rechazada'
+    const seguimiento = { id_seguimiento: uid('s'), resultado: payload.resultado, observacion: payload.observacion, fecha_seguimiento: new Date().toISOString().slice(0,10), estado:'registrado', id_evidencia: idEvidencia };
+    DB.seguimientos.push(seguimiento);
+    DB.notificaciones.push({
+      id_notificacion: uid('n'),
+      titulo_notificacion: payload.resultado==='aprobada' ? 'Evidencia aprobada' : 'Evidencia rechazada',
+      tipo:'seguimiento',
+      mensaje: payload.resultado==='aprobada' ? `¡Tu evidencia "${ev.titulo}" fue aprobada!` : `Tu evidencia "${ev.titulo}" fue rechazada. Revisa las observaciones.`,
+      origen:'automatica', estado:'no_leida', fecha_creacion: new Date().toISOString().slice(0,10),
+      id_usuario: ev.id_usuario, para:'aprendiz'
+    });
+    await dbSave(); return seguimiento;
+  },
+  async getMateriales(){ await delay(80); return DB.materiales; },
+  async addMaterial(payload){
+    await delay(140);
+    const nuevo = { id_material: uid('m'), estado:'disponible', ...payload };
+    DB.materiales.push(nuevo); await dbSave(); return nuevo;
+  },
+  async getNotificacionesInstructor(){ await delay(80); return DB.notificaciones.filter(n=>n.para==='instructor').sort((a,b)=>b.fecha_creacion.localeCompare(a.fecha_creacion)); },
+  async enviarNotificacion(payload){
+    await delay(160);
+    payload.destinatarios.forEach(idUsuario=>{
+      DB.notificaciones.push({
+        id_notificacion: uid('n'), titulo_notificacion: payload.titulo, tipo:'manual', mensaje: payload.mensaje,
+        origen:'manual', estado:'no_leida', fecha_creacion: new Date().toISOString().slice(0,10),
+        id_usuario: idUsuario, para:'aprendiz'
+      });
+    });
+    await dbSave();
+  },
+  async marcarNotifLeida(id){
+    const n = DB.notificaciones.find(x=>x.id_notificacion===id);
+    if(n){ n.estado='leida'; await dbSave(); }
+  }
+};
+
+/* ========================= ADAPTADOR REST REAL ========================= */
+const LocalAPI = Object.fromEntries(Object.entries(API));
+let API_REAL = true;
+async function tryReal(realFn, localFn){ if(!API_REAL) return localFn(); try{return await realFn();}catch(e){console.warn('Victoria API:',e.message);API_REAL=false;return localFn();} }
+Object.assign(API,{
+  async getFichasInstructor(){return tryReal(async()=>{const d=await apiRequest(API_ROUTES.fichasInstructor(INSTRUCTOR.id_usuario));const a=d.items||d.fichas||d||[];return a.map(f=>({...f,total_aprendices:f.total_aprendices??f.aprendices_count??0}));},()=>LocalAPI.getFichasInstructor());},
+  async getFicha(id){return tryReal(()=>apiRequest(API_ROUTES.ficha(id)),()=>LocalAPI.getFicha(id));},
+  async getAprendices(id){return tryReal(async()=>{const d=await apiRequest(API_ROUTES.aprendices(id));const data=d.items||d.aprendices||d||[];return data.length?data:LocalAPI.getAprendices(id);},()=>LocalAPI.getAprendices(id));},
+  async getCompetencias(id){return tryReal(async()=>{const d=await apiRequest(API_ROUTES.competencias(id));return d.items||d.competencias||d||[];},()=>LocalAPI.getCompetencias(id));},
+  async getResultados(id){return tryReal(async()=>{const d=await apiRequest(API_ROUTES.resultados(id));return d.items||d.resultados||d||[];},()=>LocalAPI.getResultados(id));},
+  async getEntregables(id){return tryReal(async()=>{const d=await apiRequest(API_ROUTES.entregables(id));return d.items||d.entregables||d||[];},()=>LocalAPI.getEntregables(id));},
+  async getEntregable(id){return tryReal(()=>apiRequest(API_ROUTES.entregable(id)),()=>LocalAPI.getEntregable(id));},
+  async updateEntregable(id,payload){ API_REAL=false; return LocalAPI.updateEntregable(id,payload);},
+  async deleteEntregable(id){ API_REAL=false; return LocalAPI.deleteEntregable(id);},
+  async replaceEntregable(id,payload){ API_REAL=false; return LocalAPI.replaceEntregable(id,payload);},
+  async getEvidencias(id){return tryReal(async()=>{const d=await apiRequest(API_ROUTES.evidencias(id));return d.items||d.evidencias||d||[];},()=>LocalAPI.getEvidencias(id));},
+  async getMateriales(){return tryReal(async()=>{const d=await apiRequest(API_ROUTES.materiales(INSTRUCTOR.id_usuario));return d.items||d.materiales||d||[];},()=>LocalAPI.getMateriales());},
+  async getNotificacionesInstructor(){return tryReal(async()=>{const d=await apiRequest(API_ROUTES.notificaciones(INSTRUCTOR.id_usuario));return d.items||d.notificaciones||d||[];},()=>LocalAPI.getNotificacionesInstructor());}
+});
+
+/* ========================= UI / ROUTER ========================= */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+let state = { ficha: null, entregable: null, aprendiz: null };
+
+function showScreen(name){
+  $$('.screen').forEach(s=>s.classList.remove('active'));
+  $('#screen-'+name).classList.add('active');
+  $$('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
+}
+$$('#mainNav button').forEach(b=> b.addEventListener('click', ()=>{
+  showScreen(b.dataset.screen);
+  if(b.dataset.screen==='home') renderHome();
+  if(b.dataset.screen==='fichas') renderFichas();
+  if(b.dataset.screen==='competencias') renderCompetenciasGlobal();
+  if(b.dataset.screen==='materiales') renderMateriales();
+}));
+$('#bellBtn').addEventListener('click', ()=>{ showScreen('notificaciones'); renderNotificaciones(); });
+$('#profileBtn').addEventListener('click', ()=>{ showScreen('perfil'); renderPerfil(); });
+$('#perfilLogoutBtn').addEventListener('click', ()=> $('#logoutBtn').click());
+
+function renderPerfil(){
+  const nombre = INSTRUCTOR?.nombre_apellido || sessionStorage.getItem('victoria_user_name') || 'Instructor';
+  const id = INSTRUCTOR?.id_usuario || sessionStorage.getItem('victoria_user_id') || '—';
+  const rol = INSTRUCTOR?.rol || sessionStorage.getItem('victoria_user_role') || 'instructor';
+  const partes = String(nombre).trim().split(/\s+/).filter(Boolean);
+  const iniciales = partes.slice(0,2).map(x=>x[0]).join('').toUpperCase() || 'I';
+  $('#perfilAvatar').textContent = iniciales;
+  $('#perfilNombre').textContent = nombre;
+  $('#perfilNombreInfo').textContent = nombre;
+  $('#perfilId').textContent = id;
+  $('#perfilRol').textContent = String(rol).charAt(0).toUpperCase()+String(rol).slice(1);
+  $('#perfilRolInfo').textContent = String(rol).charAt(0).toUpperCase()+String(rol).slice(1);
+}
+
+$$('[data-screen="fichas"]').forEach(b=>b.addEventListener('click', ()=>{ showScreen('fichas'); renderFichas(); }));
+
+function toast(msg){
+  const t = $('#toast');
+  t.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>${msg}`;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function openModal(id){ $(id).classList.add('show'); }
+function closeModal(id){ $(id).classList.remove('show'); }
+$$('[data-close]').forEach(b=> b.addEventListener('click', e=> closeModal('#'+e.target.closest('.overlay').id)));
+$$('.overlay').forEach(o=> o.addEventListener('click', e=>{ if(e.target===o) closeModal('#'+o.id); }));
+
+function initials(name){ return name.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase(); }
+function icon(name){
+  const icons = {
+    fichas:'<path d="M3 7h18M3 12h18M3 17h18"/>',
+    check:'<path d="M20 6L9 17l-5-5"/>',
+    bell:'<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>',
+    users:'<circle cx="9" cy="7" r="4"/><path d="M17 11a4 4 0 100-8"/><path d="M1 21v-2a4 4 0 014-4h8a4 4 0 014 4v2"/><path d="M17 11c2.5 0 6 1.2 6 4v2h-4"/>',
+  };
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icons[name]||''}</svg>`;
+}
+
+/* ---------- HOME ---------- */
+async function renderHome(){
+  const title = document.querySelector('#screen-home .page-title');
+  if(title) title.innerHTML = `Bienvenido, ${INSTRUCTOR.nombre_apellido} <span id="homeSub">Cargando resumen desde la API…</span>`;
+  $('#homeSub').textContent = 'Cargando resumen desde la API…';
+  const fichas = await API.getFichasInstructor();
+  let pendCount = 0;
+  for(const f of fichas){ pendCount += (await API.getEvidenciasPendientesPorFicha(f.id_ficha)).length; }
+  const notifs = await API.getNotificacionesInstructor();
+  const noLeidas = notifs.filter(n=>n.estado==='no_leida').length;
+  $('#bellDot').textContent = noLeidas;
+  $('#bellDot').style.display = noLeidas ? 'flex' : 'none';
+
+  $('#homeSub').textContent = `${fichas.length} fichas activas · Programa: Análisis y desarrollo de software`;
+
+  $('#statGrid').innerHTML = `
+    <div class="stat-card"><div class="ic">${icon('fichas')}</div><div><b>${fichas.length}</b><small>Fichas asignadas</small></div></div>
+    <div class="stat-card"><div class="ic">${icon('check')}</div><div><b>${pendCount}</b><small>Evidencias por calificar</small></div></div>
+    <div class="stat-card"><div class="ic">${icon('bell')}</div><div><b>${noLeidas}</b><small>Notificaciones sin leer</small></div></div>
+  `;
+
+  $('#homeFichas').innerHTML = fichas.map(f => fichaRowHTML(f)).join('') || emptyHTML('No tienes fichas asignadas todavía.');
+  $$('#homeFichas .list-item').forEach(el => el.addEventListener('click', ()=> openFicha(Number(el.dataset.id))));
+
+  const allPending = [];
+  for(const f of fichas){
+    const evs = await API.getEvidenciasPendientesPorFicha(f.id_ficha);
+    evs.forEach(ev => allPending.push({...ev, ficha: f.id_ficha}));
+  }
+  $('#homePending').innerHTML = allPending.slice(0,5).map(ev=>{
+    const alumno = DB.usuarios.find(u=>u.id_usuario===ev.id_usuario);
+    return `<div class="list-item" data-ent="${ev.id_entregable}"><div class="ic-badge">${icon('check')}</div>
+      <div class="meta"><b>${ev.titulo}</b><small>${alumno?alumno.nombre_apellido:'Aprendiz'} · Ficha ${ev.ficha}</small></div>
+      <div class="tags"><span class="pill ${ev.estado==='pendiente'?'warn':'on-white'}">${ev.estado}</span></div>
+      <div class="chev">›</div></div>`;
+  }).join('') || emptyHTML('No hay evidencias pendientes de calificación. 🎉');
+  $$('#homePending .list-item').forEach(el => el.addEventListener('click', async ()=>{
+    const idEnt = Number(el.dataset.ent);
+    const entregable = await API.getEntregable(idEnt);
+    state.ficha = entregable.id_ficha;
+    openEntregable(idEnt);
+  }));
+}
+
+function emptyHTML(msg){
+  return `<div class="glass-card empty-state">${icon('check')}<p>${msg}</p></div>`;
+}
+function fichaRowHTML(f){
+  return `<div class="list-item" data-id="${f.id_ficha}">
+    <div class="ic-badge">${icon('fichas')}</div>
+    <div class="meta"><b>Ficha ${f.id_ficha}</b><small>${f.programa} · ${f.trimestre}</small></div>
+    <div class="tags"><span class="pill on-white">${f.total_aprendices} aprendices</span><span class="pill">${f.estado}</span></div>
+    <div class="chev">›</div>
+  </div>`;
+}
+
+/* ---------- MIS FICHAS ---------- */
+async function renderFichas(){
+  const fichas = await API.getFichasInstructor();
+  $('#fichasList').innerHTML = fichas.map(fichaRowHTML).join('');
+  $$('#fichasList .list-item').forEach(el => el.addEventListener('click', ()=> openFicha(Number(el.dataset.id))));
+}
+
+/* ---------- COMPETENCIAS GLOBAL ---------- */
+async function renderCompetenciasGlobal(){
+  const fichas = await API.getFichasInstructor();
+  const rows = [];
+  for(const f of fichas){
+    const comps = await API.getCompetencias(f.id_ficha);
+    for(const c of comps){
+      rows.push({...c, id_ficha:Number(f.id_ficha), ficha:f, trimestre:f.trimestre || 'Trimestre 1'});
+    }
+  }
+
+  const byTrim = { 'Trimestre 1':[], 'Trimestre 2':[], 'Trimestre 3':[], 'Trimestre 4':[] };
+  rows.forEach(c => (byTrim[c.trimestre] ||= []).push(c));
+
+  const trimCard = (trim, index) => {
+    const comps = byTrim[trim] || [];
+    const grouped = {};
+    comps.forEach(c => {
+      /* La vista de Figma agrupa por nombre de competencia y debajo
+         muestra las fichas donde esa competencia está disponible. */
+      const key = String(c.nombre || c.id_competencia).trim().toLowerCase();
+      if(!grouped[key]) grouped[key] = {nombre:c.nombre, fichas:[]};
+      if(!grouped[key].fichas.some(f=>f.id_ficha===c.id_ficha)) grouped[key].fichas.push(c.ficha);
+    });
+    const expanded = index===1;
+    const body = Object.values(grouped).map(comp => `
+      <div class="competencia-global-item open">
+        <div class="competencia-global-head">
+          <div class="competencia-icon">${icon('fichas')}</div>
+          <div class="competencia-copy"><b>${comp.nombre}</b><small>1 Unidad de Aprendizaje</small></div>
+          <span class="ficha-count">${comp.fichas.length} ${comp.fichas.length===1?'Ficha':'Fichas'}</span>
+          <span class="global-chevron">⌄</span>
+        </div>
+        <div class="competencia-fichas">
+          ${comp.fichas.map(f=>`<button class="global-ficha-row" data-ficha="${f.id_ficha}"><span class="ficha-icon">${icon('fichas')}</span><span><b>Ficha ${f.id_ficha}</b><small>${f.programa || 'Análisis y desarrollo de software'}</small></span><span class="global-chevron">⌄</span></button>`).join('')}
+        </div>
+      </div>`).join('');
+    return `<section class="trimester-card ${expanded?'open':''}" data-trim="${trim}">
+      <button class="trimester-head" type="button">
+        <span class="trimester-icon">${icon('fichas')}</span>
+        <span class="trimester-copy"><b>${trim}</b><small>${Object.keys(grouped).length} competencia${Object.keys(grouped).length===1?'':'s'}</small></span>
+        <span class="global-chevron">⌄</span>
+      </button>
+      <div class="trimester-body">${body || '<div class="trimester-empty">No hay competencias asignadas.</div>'}</div>
+    </section>`;
+  };
+
+  $('#competenciasGlobal').innerHTML = `<div class="competencias-columns">
+    <div>${trimCard('Trimestre 1',1)}${trimCard('Trimestre 2',2)}</div>
+    <div>${trimCard('Trimestre 3',3)}${trimCard('Trimestre 4',4)}</div>
+  </div>`;
+
+  $$('#competenciasGlobal .trimester-head').forEach(h=>h.addEventListener('click',()=>h.closest('.trimester-card').classList.toggle('open')));
+  $$('#competenciasGlobal .competencia-global-head').forEach(h=>h.addEventListener('click',()=>h.closest('.competencia-global-item').classList.toggle('open')));
+  $$('#competenciasGlobal .global-ficha-row').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation(); openFicha(Number(b.dataset.ficha));}));
+}
+
+/* ---------- FICHA DETAIL ---------- */
+async function openFicha(id){
+  state.ficha = id;
+  const f = await API.getFicha(id);
+
+  // Al entrar a una ficha se muestra COMPETENCIAS directamente.
+  // No existe una pantalla independiente de competencias: la información
+  // pertenece a la ficha y se consulta desde su propia pestaña.
+  $('#fichaTitle').innerHTML = `Ficha ${f.id_ficha} <span>${f.programa} · ${f.trimestre} · Instructor: ${INSTRUCTOR.nombre_apellido}</span>`;
+  showScreen('ficha');
+
+  $$('#fichaTabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab==='aprendices'));
+  $('#fichaAprendices').style.display='block';
+  $('#fichaEntregables').style.display='none';
+  $('#fichaCompetencias').style.display='none';
+  await renderFichaAprendices(id);
+}
+
+$$('#fichaTabs button').forEach(b=>b.addEventListener('click', async ()=>{
+  $$('#fichaTabs button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $('#fichaAprendices').style.display = b.dataset.tab==='aprendices' ? 'block':'none';
+  $('#fichaEntregables').style.display = b.dataset.tab==='entregables' ? 'block':'none';
+  $('#fichaCompetencias').style.display = b.dataset.tab==='competencias' ? 'block':'none';
+  if(b.dataset.tab==='entregables') await renderFichaEntregables(state.ficha);
+  if(b.dataset.tab==='competencias') await renderFichaCompetencias(state.ficha);
+}));
+
+async function renderFichaAprendices(idFicha){
+  const aprendices = await API.getAprendices(idFicha);
+  $('#fichaAprendices').innerHTML = `
+    <div class="row-between" style="margin-bottom:12px;">
+      <div class="section-title" style="margin:0;">Aprendices (${aprendices.length})</div>
+      <button class="btn btn-primary btn-sm" id="btnAddAprendiz">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Añadir Aprendiz</button>
+    </div>
+    <div id="apList"></div>`;
+  $('#apList').innerHTML = aprendices.map(a=>`
+    <div class="list-item" data-id="${a.id_usuario}">
+      <div class="avatar">${initials(a.nombre_apellido)}</div>
+      <div class="meta"><b>${a.nombre_apellido}</b><small>Ver portafolio</small></div>
+      <div class="chev">›</div>
+    </div>`).join('') || emptyHTML('Aún no hay aprendices en esta ficha.');
+  $$('#apList .list-item').forEach(el=> el.addEventListener('click', ()=> openAprendiz(el.dataset.id, idFicha)));
+  $('#btnAddAprendiz').addEventListener('click', ()=>{
+    $('#modalAprendizSub').textContent = `Ficha ${idFicha} · Añadir aprendiz`;
+    $('#apNombre').value=''; $('#apDoc').value=''; $('#apInfo').value='';
+    openModal('#modalAprendiz');
+  });
+  $('#saveAprendiz').onclick = async ()=>{
+    const nombre = $('#apNombre').value.trim();
+    if(!nombre){ toast('Ingresa el nombre del aprendiz'); return; }
+    await API.addAprendiz(idFicha, { nombre, documento: $('#apDoc').value, info: $('#apInfo').value });
+    API_REAL=false;
+    closeModal('#modalAprendiz'); toast('Aprendiz añadido a la ficha'); await renderFichaAprendices(idFicha);
+  };
+}
+
+async function openAprendiz(idUsuario, idFicha){
+  const aprendices = await API.getAprendices(idFicha);
+  const u = aprendices.find(x=>String(x.id_usuario)===String(idUsuario)) || DB.usuarios.find(x=>String(x.id_usuario)===String(idUsuario));
+  if(!u){ toast('No se encontró el aprendiz'); return; }
+  state.aprendiz = idUsuario;
+  $('#aprendizTitle').textContent = u.nombre_apellido;
+  showScreen('aprendiz');
+  const entregables = await API.getEntregables(idFicha);
+  const evidenciasAlumno = DB.evidencias.filter(ev=>ev.id_usuario==idUsuario);
+  const seguimientos = DB.seguimientos;
+  const rows = entregables.map(ent=>{
+    const ev = evidenciasAlumno.find(e=>e.id_entregable===ent.id_entregable);
+    const seg = ev ? seguimientos.find(s=>s.id_evidencia===ev.id_evidencia) : null;
+    const estado = ev ? ev.estado : 'sin entregar';
+    const pillClass = estado==='aprobada' ? 'on-white' : estado==='rechazada' ? 'danger' : estado==='sin entregar' ? 'muted' : 'warn';
+    return `<div class="acc-sub"><div class="txt"><b style="font-size:13px;">${ent.nombre_entregable}</b><br><small>${seg ? ('Obs: '+ (seg.observacion||'—')) : 'Sin calificar'}</small></div><span class="pill ${pillClass}">${estado}</span></div>`;
+  }).join('');
+  $('#aprendizPortfolio').innerHTML = `
+    <div class="row-between" style="margin-bottom:14px;">
+      <div style="display:flex;gap:12px;align-items:center;"><div class="avatar" style="width:44px;height:44px;font-size:16px;">${initials(u.nombre_apellido)}</div>
+      <div><b style="font-size:15px;">${u.nombre_apellido}</b><br><small style="color:var(--ink-faint)">Ficha ${idFicha} · Estado: ${u.estado}</small></div></div>
+      <span class="pill">${entregables.length} entregables</span>
+    </div>
+    <div class="section-title" style="margin-top:0;">Trimestre 1 — portafolio</div>
+    ${rows || emptyHTML('Este aprendiz aún no tiene entregables asignados.')}
+  `;
+}
+$('#backToFichaFromAprendiz').addEventListener('click', ()=> openFicha(state.ficha));
+
+async function renderFichaEntregables(idFicha){
+  const entregables = await API.getEntregables(idFicha);
+  $('#fichaEntregables').innerHTML = `
+    <div class="row-between" style="margin-bottom:12px;">
+      <div class="section-title" style="margin:0;">Entregables (${entregables.length})</div>
+      <button class="btn btn-primary btn-sm" id="btnNewEntregable">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>Nueva Tarea</button>
+    </div>
+    <div id="entList"></div>`;
+  $('#entList').innerHTML = entregables.map(e=>{
+    const evs = DB.evidencias.filter(x=>x.id_entregable===e.id_entregable);
+    const pendientes = evs.filter(x=>x.estado==='entregado'||x.estado==='pendiente').length;
+    return `<div class="list-item" data-id="${e.id_entregable}">
+      <div class="ic-badge">${icon('check')}</div>
+      <div class="meta"><b>${e.nombre_entregable}</b><small>Vence ${e.fecha_fin||'—'} · ${e.descripcion||'Sin descripción'}</small></div>
+      <div class="tags">${pendientes?`<span class="pill warn">${pendientes} por calificar</span>`:'<span class="pill on-white">al día</span>'}</div>
+      <div class="task-actions">
+        <button class="task-action primary" data-task-action="edit" data-id="${e.id_entregable}" type="button">Editar</button>
+        <button class="task-action" data-task-action="refresh" data-id="${e.id_entregable}" type="button">Actualizar</button>
+        <button class="task-action replace" data-task-action="replace" data-id="${e.id_entregable}" type="button">Reemplazar</button>
+        <button class="task-action danger" data-task-action="delete" data-id="${e.id_entregable}" type="button">Eliminar</button>
+      </div>
+      <div class="chev">›</div></div>`;
+  }).join('') || emptyHTML('Aún no has creado entregables para esta ficha.');
+  $$('#entList .list-item').forEach(el=> el.addEventListener('click', (ev)=>{
+    if(ev.target.closest('[data-task-action]')) return;
+    openEntregable(el.dataset.id, idFicha);
+  }));
+  // Delegación de eventos: las acciones siguen funcionando tras cada renderizado de la lista.
+  $('#entList').onclick = async (ev)=>{
+    const btn = ev.target.closest('[data-task-action]');
+    if(!btn) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    const id = btn.dataset.id;
+    const action = btn.dataset.taskAction;
+    if(btn.disabled) return;
+    btn.disabled = true;
+    try {
+      if(action==='refresh'){
+        await renderFichaEntregables(idFicha);
+        toast('Tareas actualizadas');
+        return;
+      }
+      const ent = await LocalAPI.getEntregable(id);
+      if(action==='delete'){
+        if(!ent) throw new Error('Tarea no encontrada');
+        if(confirm(`¿Eliminar la tarea "${ent.nombre_entregable}"?`)){
+          await API.deleteEntregable(id);
+          toast('Tarea eliminada');
+          await renderFichaEntregables(idFicha);
+        }
+        return;
+      }
+      if(!ent) throw new Error('Tarea no encontrada');
+      const replace = action==='replace';
+      if(action!=='edit' && !replace) throw new Error('Acción no válida');
+      $('#editTaskHeading').textContent = replace ? 'Reemplazar Tarea' : 'Editar Tarea';
+      $('#editTaskSub').textContent = `${replace?'Reemplaza':'Edita'} la tarea de la ficha ${idFicha}.`;
+      $('#editEntTitulo').value = ent.nombre_entregable || '';
+      $('#editEntDescripcion').value = ent.descripcion || '';
+      $('#editEntCriterio').value = ent.criterio_evaluacion || '';
+      $('#editEntInicio').value = ent.fecha_inicio || '';
+      $('#editEntFin').value = ent.fecha_fin || '';
+      $('#saveEditEntregable').textContent = replace ? 'Reemplazar Tarea' : 'Guardar cambios';
+      $('#saveEditEntregable').dataset.taskId = id;
+      $('#saveEditEntregable').dataset.taskMode = replace ? 'replace' : 'edit';
+      openModal('#modalEditarTarea');
+    } catch(err) {
+      console.error(err);
+      toast(err?.message || 'No se pudo ejecutar la acción');
+    } finally {
+      if(document.body.contains(btn)) btn.disabled = false;
+    }
+  };
+  $('#btnNewEntregable').addEventListener('click', async ()=>{
+    const fichasInstructor = await API.getFichasInstructor();
+    $('#modalEntregableSub').textContent = 'Selecciona una o varias fichas';
+    ['entTitulo','entDescripcion','entCriterio','entInicio','entFin'].forEach(id=>$('#'+id).value='');
+    $('#entFichas').innerHTML = fichasInstructor.map(f=>{
+      const seleccionada = Number(f.id_ficha) === Number(idFicha);
+      return `<div class="chip ficha-chip ${seleccionada?'sel':''}" data-id="${f.id_ficha}" title="${f.programa || 'Ficha'}">
+        <span class="chip-check">✓</span>${f.id_ficha}<span class="chip-count">(${f.total_aprendices} aprend.)</span>
+      </div>`;
+    }).join('');
+    const actualizarResumen = ()=>{
+      const seleccionadas = $$('#entFichas .ficha-chip.sel');
+      const ids = seleccionadas.map(c=>c.dataset.id);
+      $('#entFichasResumen').textContent = ids.length
+        ? `${ids.length} ficha(s) seleccionada(s): ${ids.join(', ')}`
+        : 'Selecciona al menos una ficha.';
+    };
+    $$('#entFichas .ficha-chip').forEach(c=> c.addEventListener('click', ()=>{ c.classList.toggle('sel'); actualizarResumen(); }));
+    actualizarResumen();
+    openModal('#modalEntregable');
+  });
+  $('#saveEntregable').onclick = async ()=>{
+    const nombre = $('#entTitulo').value.trim();
+    if(!nombre){ toast('Ingresa un título para la tarea'); return; }
+    const idFichas = $$('#entFichas .ficha-chip.sel').map(c=>Number(c.dataset.id));
+    if(!idFichas.length){ toast('Selecciona al menos una ficha'); return; }
+    await API.addEntregable(idFicha, {
+      nombre_entregable: nombre, descripcion: $('#entDescripcion').value, criterio_evaluacion: $('#entCriterio').value,
+      fecha_inicio: $('#entInicio').value, fecha_fin: $('#entFin').value, id_fichas: idFichas
+    });
+    API_REAL=false;
+    closeModal('#modalEntregable');
+    const totalAprendices = idFichas.reduce((total, fichaId)=> total + DB.usuarios.filter(u=>u.rol==='aprendiz' && Number(u.id_ficha)===fichaId).length, 0);
+    toast(`Tarea creada para ${idFichas.length} ficha(s) y ${totalAprendices} aprendiz(es)`);
+    renderFichaEntregables(idFicha);
+  };
+}
+
+$('#saveEditEntregable').addEventListener('click', async ()=>{
+  const id = $('#saveEditEntregable').dataset.taskId;
+  const mode = $('#saveEditEntregable').dataset.taskMode || 'edit';
+  const nombre = $('#editEntTitulo').value.trim();
+  if(!id || !nombre){ toast('Ingresa un título para la tarea'); return; }
+  const payload = {
+    nombre_entregable: nombre,
+    descripcion: $('#editEntDescripcion').value.trim(),
+    criterio_evaluacion: $('#editEntCriterio').value.trim(),
+    fecha_inicio: $('#editEntInicio').value,
+    fecha_fin: $('#editEntFin').value
+  };
+  API_REAL=false;
+  if(mode==='replace') await API.replaceEntregable(id, payload);
+  else await API.updateEntregable(id, payload);
+  closeModal('#modalEditarTarea');
+  toast(mode==='replace' ? 'Tarea reemplazada' : 'Tarea actualizada');
+  if(state.ficha) await renderFichaEntregables(state.ficha);
+});
+
+async function openEntregable(id, fichaContext=null){
+  id = Number(id);
+  state.entregable = id;
+  const ent = await API.getEntregable(id);
+  const fichasEnt = Array.isArray(ent.id_fichas) && ent.id_fichas.length ? ent.id_fichas : [ent.id_ficha];
+  state.ficha = Number(fichaContext) || Number(ent.id_ficha) || Number(fichasEnt[0]);
+  $('#entregableTitle').innerHTML = `${ent.nombre_entregable} <span>Fichas ${fichasEnt.join(', ')}</span>`;
+  showScreen('entregable');
+  $('#entregableInfo').innerHTML = `
+    <p style="margin:0 0 8px;color:var(--ink-dim);font-size:13.5px;">${ent.descripcion||'Sin descripción.'}</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="pill">Vence ${ent.fecha_fin||'—'}</span>
+      <span class="pill on-white" style="background:rgba(255,255,255,.1);color:var(--ink)">Criterio: ${ent.criterio_evaluacion||'—'}</span>
+    </div>`;
+  await renderEvidencias(id);
+}
+$('#backToFichaFromEntregable').addEventListener('click', ()=> openFicha(state.ficha));
+
+async function renderEvidencias(idEntregable){
+  const evs = await API.getEvidencias(idEntregable);
+  $('#evidenciasList').innerHTML = evs.map(ev=>{
+    const alumno = DB.usuarios.find(u=>u.id_usuario===ev.id_usuario);
+    const pillClass = ev.estado==='aprobada' ? 'on-white' : ev.estado==='rechazada' ? 'danger' : 'warn';
+    return `<div class="list-item" data-id="${ev.id_evidencia}">
+      <div class="avatar">${initials(alumno?alumno.nombre_apellido:'??')}</div>
+      <div class="meta"><b>${alumno?alumno.nombre_apellido:'Aprendiz'}</b><small>${ev.titulo} · ${ev.fecha_carga}</small></div>
+      <div class="tags"><span class="pill ${pillClass}">${ev.estado}</span></div>
+      <div class="chev">›</div></div>`;
+  }).join('') || emptyHTML('Nadie ha entregado evidencias para esta tarea todavía.');
+  $$('#evidenciasList .list-item').forEach(el=> el.addEventListener('click', ()=> openCalificar(Number(el.dataset.id))));
+}
+
+async function openCalificar(idEvidencia){
+  const ev = DB.evidencias.find(e=>e.id_evidencia===idEvidencia);
+  const alumno = DB.usuarios.find(u=>u.id_usuario===ev.id_usuario);
+  const ent = DB.entregables.find(e=>e.id_entregable===ev.id_entregable);
+  $('#modalCalificarSub').textContent = `${alumno.nombre_apellido} · ${ev.titulo}`;
+  $('#calCriterio').textContent = ent.criterio_evaluacion || 'Sin criterio definido para este entregable.';
+  $('#calObs').value='';
+  $$('#calResultado .rbtn').forEach(b=>{ b.classList.remove('sel-good','sel-bad'); });
+  openModal('#modalCalificar');
+  $$('#calResultado .rbtn').forEach(b=> b.onclick = ()=>{
+    $$('#calResultado .rbtn').forEach(x=>x.classList.remove('sel-good','sel-bad'));
+    b.classList.add(b.dataset.val==='aprobada'?'sel-good':'sel-bad');
+    $('#calResultado').dataset.value = b.dataset.val;
+  });
+  $('#saveCalificacion').onclick = async ()=>{
+    const val = $('#calResultado').dataset.value;
+    if(!val){ toast('Selecciona si la evidencia es aprobada o no aprobada'); return; }
+    await API.calificarEvidencia(idEvidencia, { resultado: val, observacion: $('#calObs').value });
+    closeModal('#modalCalificar');
+    toast('Calificación registrada y aprendiz notificado');
+    renderEvidencias(ev.id_entregable);
+  };
+}
+
+/* ---------- COMPETENCIAS ---------- */
+async function renderFichaCompetencias(idFicha){
+  const comps = await API.getCompetencias(idFicha);
+  const f = await API.getFicha(idFicha);
+
+  // Una ficha pertenece a un único trimestre. Por eso NO repetimos las
+  // competencias en cuatro columnas ni creamos una segunda sección global.
+  // Mostramos solamente el trimestre real de la ficha.
+  const trimestre = f?.trimestre || 'Trimestre 1';
+  const html = await Promise.all(comps.map(async c=>{
+    const resultados = await API.getResultados(c.id_competencia);
+    return `<div class="acc" data-id="${c.id_competencia}">
+      <div class="acc-head">
+        <div class="left"><span class="pill" style="background:var(--accent-deep)">${resultados.length}</span>
+          <div><b>${c.nombre}</b><small>${resultados.length} resultados de aprendizaje</small></div></div>
+        <span class="chev-acc" style="color:#9db3a4;">⌄</span>
+      </div>
+      <div class="acc-body">
+        ${resultados.map(r=>`<div class="acc-sub"><div class="txt"><b style="font-size:13px;">${r.nombre_resultado}</b><br><small>${r.etapa || '—'} · ${r.duracion_maxima_horas || 0}h · ${r.criterio_evaluacion || 'Sin criterio registrado'}</small></div></div>`).join('') || '<div style="font-size:12px;color:#5d7368;padding:6px 2px;">Sin resultados registrados aún.</div>'}
+        <button class="btn btn-ghost btn-sm" style="margin-top:6px;color:#12261a;background:#eef4ee;border:1px solid #d7e6da;" data-add="${c.id_competencia}">+ Nuevo resultado</button>
+      </div>
+    </div>`;
+  }));
+
+  const empty = `<div class="glass-card" style="padding:22px 18px;text-align:center;">
+    <div style="font-size:13px;font-weight:700;color:var(--ink);">No hay competencias asignadas a esta ficha</div>
+    <div style="font-size:11px;color:var(--ink-faint);margin-top:5px;">Las competencias se mostrarán aquí cuando estén asociadas al programa y trimestre.</div>
+  </div>`;
+
+  $('#fichaCompetencias').innerHTML = `
+    <div class="competencias-header">
+      <div>
+        <div class="section-title" style="margin-top:0;margin-bottom:3px;">Competencias del programa</div>
+        <div class="competencias-subtitle">${trimestre} · ${comps.length} competencia${comps.length===1?'':'s'} asignada${comps.length===1?'':'s'} a esta ficha</div>
+      </div>
+    </div>
+    ${html.join('') || empty}`;
+
+  $$('#fichaCompetencias .acc-head').forEach(h=> h.addEventListener('click', ()=> h.closest('.acc').classList.toggle('open')));
+  $$('#fichaCompetencias [data-add]').forEach(btn=> btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    const idComp = Number(btn.dataset.add);
+    const comp = comps.find(c=>c.id_competencia===idComp);
+    $('#modalCompSub').textContent = comp.nombre;
+    ['raNombre','raCriterio','raHoras'].forEach(id=>$('#'+id).value='');
+    openModal('#modalCompetencia');
+    $('#saveCompetencia').onclick = async ()=>{
+      const nombre = $('#raNombre').value.trim();
+      if(!nombre){ toast('Ingresa el nombre del resultado'); return; }
+      await API.addResultado(idComp, { nombre_resultado: nombre, etapa: $('#raEtapa').value, criterio_evaluacion: $('#raCriterio').value, duracion_maxima_horas: Number($('#raHoras').value)||0 });
+      closeModal('#modalCompetencia'); toast('Resultado de aprendizaje guardado'); renderFichaCompetencias(idFicha);
+    };
+  }));
+}
+
+/* ---------- MATERIALES ---------- */
+async function renderMateriales(){
+  const mats = await API.getMateriales();
+  $('#materialesList').innerHTML = mats.map(m=>`
+    <div class="list-item">
+      <div class="ic-badge">${icon('fichas')}</div>
+      <div class="meta"><b>${m.nombre_material}</b><small>${m.tipo_material} · ${m.formato_material||''} · cantidad ${m.cantidad}</small></div>
+      <div class="tags"><span class="pill on-white">${m.estado}</span></div>
+    </div>`).join('') || emptyHTML('No has registrado materiales todavía.');
+}
+$('#openMaterialModal').addEventListener('click', ()=>{
+  ['matNombre','matCantidad','matUrl'].forEach(id=>$('#'+id).value='');
+  openModal('#modalMaterial');
+});
+$('#saveMaterial').addEventListener('click', async ()=>{
+  const nombre = $('#matNombre').value.trim();
+  if(!nombre){ toast('Ingresa el nombre del material'); return; }
+  await API.addMaterial({ nombre_material: nombre, tipo_material: $('#matTipo').value, formato_material: 'Digital', cantidad: Number($('#matCantidad').value)||1, url_material: $('#matUrl').value });
+  closeModal('#modalMaterial'); toast('Material registrado'); renderMateriales();
+});
+
+/* ---------- NOTIFICACIONES ---------- */
+async function renderNotificaciones(){
+  const notifs = await API.getNotificacionesInstructor();
+  $('#notifList').innerHTML = notifs.map(n=>`
+    <div class="list-item" data-id="${n.id_notificacion}">
+      <div class="ic-badge">${icon('bell')}</div>
+      <div class="meta"><b>${n.titulo_notificacion}</b><small>${n.mensaje}</small></div>
+      <div class="tags"><span class="pill ${n.estado==='no_leida'?'warn':'muted'}">${n.estado==='no_leida'?'nueva':'leída'}</span></div>
+    </div>`).join('') || emptyHTML('No tienes notificaciones.');
+  $$('#notifList .list-item').forEach(el=> el.addEventListener('click', async ()=>{
+    await API.marcarNotifLeida(Number(el.dataset.id) || el.dataset.id);
+    renderNotificaciones();
+  }));
+}
+$('#openNotifModal').addEventListener('click', async ()=>{
+  const fichas = await API.getFichasInstructor();
+  $('#notifFicha').innerHTML = fichas.map(f=>`<option value="${f.id_ficha}">Ficha ${f.id_ficha}</option>`).join('');
+  await refreshNotifDest();
+  $('#notifFicha').onchange = refreshNotifDest;
+  $('#notifTitulo').value=''; $('#notifMsg').value='';
+  openModal('#modalNotif');
+});
+async function refreshNotifDest(){
+  const idFicha = Number($('#notifFicha').value);
+  const aprendices = await API.getAprendices(idFicha);
+  $('#notifDest').innerHTML = aprendices.map(a=>`<div class="chip" data-id="${a.id_usuario}">${a.nombre_apellido}</div>`).join('');
+  $$('#notifDest .chip').forEach(c=> c.addEventListener('click', ()=> c.classList.toggle('sel')));
+}
+$('#saveNotif').addEventListener('click', async ()=>{
+  const dest = $$('#notifDest .chip.sel').map(c=>c.dataset.id);
+  const titulo = $('#notifTitulo').value.trim();
+  if(!dest.length){ toast('Selecciona al menos un destinatario'); return; }
+  if(!titulo){ toast('Escribe un asunto'); return; }
+  await API.enviarNotificacion({ titulo, mensaje: $('#notifMsg').value, destinatarios: dest });
+  closeModal('#modalNotif'); toast(`Notificación enviada a ${dest.length} aprendiz(es)`);
+});
+
+/* ---------- SEGURIDAD DE NAVEGACIÓN ---------- */
+/*
+  Atrás/Adelante NO debe reactivar una sesión.
+  - F5/recarga normal: conserva la sesión.
+  - Atrás/Adelante o página restaurada desde bfcache: limpia el token
+    y vuelve al login.
+*/
+function cerrarSesionPorHistorial(){
+  sessionStorage.removeItem('victoria_token');
+  sessionStorage.removeItem('victoria_user_id');
+  sessionStorage.removeItem('victoria_user_name');
+  sessionStorage.removeItem('victoria_user_role');
+}
+
+window.addEventListener('pageshow', function(evento){
+  const navegacion = performance.getEntriesByType('navigation')[0];
+  const esHistorial = navegacion && navegacion.type === 'back_forward';
+
+  if(evento.persisted || esHistorial){
+    cerrarSesionPorHistorial();
+    if(window.location.pathname !== '/login'){
+      window.location.replace('/login');
+    }
+  }
+});
+
+/* ---------- LOGIN ---------- */
+async function entrarConSesion(){
+  const token = sessionStorage.getItem('victoria_token');
+  if(!token){
+    window.location.href = '/login';
+    return;
+  }
+
+  try{
+    const r = await fetch('/api/v1/auth/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if(!r.ok) throw new Error('Sesión expirada');
+    const perfil = await r.json();
+    const rol = String(perfil.rol_nombre || perfil.rol || '').toLowerCase();
+    if(rol !== 'instructor'){
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    INSTRUCTOR = {
+      id_usuario: Number(perfil.id_usuario),
+      nombre_apellido: perfil.nombre_completo || [perfil.nombre, perfil.apellido].filter(Boolean).join(' '),
+      rol: rol
+    };
+
+    sessionStorage.setItem('victoria_user_id', String(INSTRUCTOR.id_usuario));
+    sessionStorage.setItem('victoria_user_name', INSTRUCTOR.nombre_apellido);
+    sessionStorage.setItem('victoria_user_role', rol);
+
+    $('#screen-login').style.display = 'none';
+    $('#mainApp').style.display = 'block';
+    await dbLoad();
+    if(window.location.pathname === '/instructor/competencias'){
+      showScreen('competencias');
+      await renderCompetenciasGlobal();
+    }else{
+      await renderHome();
+    }
+  }catch(e){
+    console.error(e);
+    sessionStorage.removeItem('victoria_token');
+    window.location.href = '/login';
+  }
+}
+
+/* ---------- LOGIN INTERNO (solo si alguien abre este HTML directamente) ---------- */
+$('#loginBtn').addEventListener('click', async ()=>{
+  const documento = $('#loginUser').value.trim();
+  const password = $('#loginPass').value;
+  if(!documento || !password){ toast('Ingresa documento y contraseña'); return; }
+  try{
+    const body = new URLSearchParams({username: documento, password});
+    const r = await fetch('/api/v1/auth/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body: body.toString()
+    });
+    const data = await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.detail || 'Documento o contraseña incorrectos.');
+    sessionStorage.setItem('victoria_token', data.access_token);
+    await entrarConSesion();
+  }catch(e){ toast(e.message || 'No se pudo iniciar sesión'); }
+});
+
+const logoutButton = document.getElementById('logoutBtn');
+if(logoutButton){
+  logoutButton.addEventListener('click', ()=>{
+    sessionStorage.removeItem('victoria_token');
+    sessionStorage.removeItem('victoria_user_id');
+    sessionStorage.removeItem('victoria_user_name');
+    sessionStorage.removeItem('victoria_user_role');
+    window.location.href = '/login';
+  });
+}
+
+/* ---------- BOOT ---------- */
+(async function init(){
+  await entrarConSesion();
+})();
+</script>
+</body>
+</html>
